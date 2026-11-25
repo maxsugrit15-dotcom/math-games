@@ -209,6 +209,30 @@ body.tv .wrap{max-width:1100px}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 #fb .pts.neg{color:#ff9aa2}
 .review .rn{color:var(--gold);font-variant-numeric:tabular-nums}
+
+/* size + ipad */
+.topline{align-items:center;gap:8px;justify-content:space-between}
+.sizes{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+.sizes span{margin-right:2px}
+.sizes button{background:var(--card2);border:1.4px solid var(--line);border-radius:9px;padding:3px 9px;color:var(--dim)}
+.sizes button.on{border-color:var(--gold);color:var(--tx);background:#3a3520}
+#gsize{font-size:12.5px;white-space:nowrap}
+.grph.hardh{color:#ff8a65}
+.lhead{display:flex;flex-direction:column;align-items:center;gap:10px}
+.lqr{background:#fff;border-radius:16px;padding:10px;width:min(78vw,300px)}
+.lqr svg{display:block;width:100%;height:auto}
+.linfo{text-align:center}
+@media(min-width:760px){ .lhead{flex-direction:row;justify-content:center;gap:28px;text-align:left} .lqr{width:280px} .linfo{text-align:left} }
+body.ingame .wrap{max-width:1180px}
+@media(min-width:900px){
+  .gmain{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);gap:16px;align-items:start}
+  .gmain #ansarea{position:sticky;top:10px}
+  .gmain .answers{grid-template-columns:1fr;margin-top:0}
+  .gmain .numwrap{margin-top:0}
+  .qtext{font-size:22px}
+  .figbox .sl{font-size:21px} .figbox .sl2{font-size:19px} .figbox .ftab{font-size:17px} .figbox .cards span{font-size:22px}
+  #fb .in{max-width:1180px}
+}
 </style>
 </head>
 <body>
@@ -222,14 +246,14 @@ body.tv .wrap{max-width:1100px}
 </div>
 
 <div id="home">
-  <div class="topline"><button class="mini sndbtn" id="snd">🔊</button></div>
+  <div class="topline"><div class="sizes" id="sizes"></div><button class="mini sndbtn" id="snd">🔊</button></div>
   <div class="head"><h1>🎯 Stat<span class="k">Arena</span></h1>
   <p>สนามประลองสถิติ ม.2 · แผนภาพจุด · ต้น-ใบ · ฮิสโทแกรม · ค่ากลาง</p></div>
   <div class="netbar" id="netbar"></div>
   <div id="pcard"></div>
   <div class="tabs"><button id="tabS">🧑‍🎓 นักเรียน</button><button id="tabT">👩‍🏫 ครู / ผู้ชม</button></div>
   <div id="paneS">
-    <div class="panel"><h4>🚪 มีรหัสห้อง? เข้าร่วมได้ทันที</h4><p class="hint">ครูกำหนดด่านให้แล้ว คะแนนขึ้นจอครูแบบสด</p>
+    <div class="panel"><h4>🚪 เข้าห้องของครู</h4><p class="hint">📷 สแกน QR บนจอครูด้วยกล้องมือถือ — หรือพิมพ์รหัสห้อง 5 หลัก</p>
       <div class="joinrow"><input class="codein" id="roomin" inputmode="numeric" maxlength="5" placeholder="•••••" autocomplete="off"><button class="btn pri" id="joinbtn">เข้าห้อง</button></div>
       <div class="warn" id="jwarn"></div></div>
     <div class="panel"><h4>🗺️ เลือกด่านเล่นเอง</h4><p class="hint">เก็บคะแนนสูงสุดของแต่ละด่านไว้กับรหัสผู้เล่น</p>
@@ -250,27 +274,29 @@ body.tv .wrap{max-width:1100px}
 </div>
 
 <div id="live" class="hide">
-  <div class="lhead"><div class="mdim">รหัสห้อง</div><div class="lc" id="lcode">-----</div>
-    <div class="ll" id="llink"></div><div class="ls" id="lstage"></div><div class="mdim" id="lcount"></div></div>
+  <div class="lhead"><div class="lqr" id="lqr"></div><div class="linfo"><div class="mdim">📱 สแกน QR เพื่อเข้าห้อง หรือใส่รหัสห้อง</div><div class="lc" id="lcode">-----</div>
+    <div class="ll" id="llink"></div><div class="ls" id="lstage"></div><div class="mdim" id="lcount"></div></div></div>
   <div id="ltable"></div>
   <div style="text-align:center"><a class="linkbtn" id="lback">← กลับหน้าหลัก</a></div>
 </div>
 
 <div id="game" class="hide">
   <div class="topbar">
-    <span class="chip" id="who"></span><button class="mini sndbtn" id="gsnd">🔊</button>
+    <span class="chip" id="who"></span><button class="mini sndbtn" id="gsnd">🔊</button><button class="mini" id="gsize">Aa</button>
     <span class="chip">ข้อ <b id="qno">1/1</b></span>
     <span class="chip sc">คะแนน <b id="score">0</b></span>
   </div>
   <div class="mdim" id="gst" style="margin:-2px 0 4px"></div>
   <div class="tbar" id="tbar"><i id="tfill"></i></div>
   <div class="tleft" id="tleft"></div>
+  <div class="gmain">
   <div class="qcard">
     <div class="qtopic" id="qtopic"></div>
     <div class="qtext" id="qtext"></div>
     <div class="figbox" id="fig"></div>
   </div>
   <div id="ansarea"></div>
+  </div>
   <div style="text-align:center"><a class="linkbtn" id="quit">← ออกไปหน้าเลือกผู้เล่น</a></div>
   <div style="height:230px" id="fbspace" class="hide"></div>
 </div>
@@ -289,6 +315,7 @@ window.onerror=function(m,src,l,c){
   var w=document.getElementById("jswarn"),e=document.getElementById("jserr");
   if(w)w.style.display="block"; if(e)e.textContent="ข้อผิดพลาด: "+m+" ("+l+":"+c+")";
 };
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
 const $ = id => document.getElementById(id);
 const fmt = ms => {const t=Math.round(ms/1000);return Math.floor(t/60)+":"+String(t%60).padStart(2,"0");};
 const esc = t => String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -722,6 +749,172 @@ function genQs(gens,n){ const out=[], seen=new Set(); let guard=0;
   while(out.length<n&&guard++<200){ const q=pick(gens)(); const key=q.q+"|"+(q.ans!==undefined?q.ans:q.choices.join()); if(seen.has(key)) continue; seen.add(key); out.push(q); }
   return out; }
 
+/* ================= ระดับท้าทาย (ยังอยู่ในขอบเขต: แผนภาพจุด ต้น-ใบ ฮิสโทแกรม ค่ากลาง) ================= */
+const splitN=(N,k,mn)=>{ const f=Array(k).fill(mn); let r=N-mn*k; while(r>0){ f[ri(0,k-1)]++; r--; } return f; };
+const okDec=(x,d)=>Math.abs(x*Math.pow(10,d)-Math.round(x*Math.pow(10,d)))<1e-9;
+function twoDots(A,B,na,nb,label){
+  const all=A.concat(B), ax={...axisFor(all)};
+  return `<div class="figcap" style="text-align:left;font-weight:700;color:#1368ce">${na}</div>`+dotPlot({counts:freqOf(A),...ax,xlabel:""})+
+         `<div class="figcap" style="text-align:left;font-weight:700;color:#c0392b;margin-top:6px">${nb}</div>`+dotPlot({counts:freqOf(B),...ax,xlabel:label});
+}
+function twoStem(A,B,na,nb,cap){
+  const one=(arr,name)=>`<div><table class="sl sl2"><tr><th colspan="2">${name}</th></tr>`+slRows(arr).map(([s,l])=>`<tr><td class="st">${s}</td><td>${l||"&nbsp;"}</td></tr>`).join("")+"</table></div>";
+  return `<div class="duo">${one(A,na)}${one(B,nb)}</div><div class="figcap">${cap}</div>`;
+}
+
+/* ---------- แผนภาพจุด ---------- */
+function hDotMedian(){
+  const c=pick(CTX), n=ri(11,22), sp=ri(7,13), lo=ri(c.lo,Math.max(c.lo,c.hi-sp)), a=dataUniqueMode(n,lo,lo+sp), md=medianOf(a), s=sortN(a);
+  return {t:"แผนภาพจุด · ยาก",type:"num",time:75,unit:c.unit,tol:0.001,q:`จากแผนภาพจุด จงหา<b>มัธยฐาน</b>ของ${c.what}`,
+    fig:()=>dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"}),ans:md,show:fx(md),
+    why:`มีข้อมูล ${n} ตัว (${n%2?"คี่":"คู่"}) · ${n%2?`ตำแหน่งที่ ${(n+1)/2} นับจากซ้าย = ${md}`:`ตำแหน่งที่ ${n/2} และ ${n/2+1} คือ ${s[n/2-1]} กับ ${s[n/2]} → เฉลี่ย = ${fx(md)}`}`};
+}
+function hDotPct(){
+  const c=pick(CTX), n=pick([20,25,40,50]), sp=ri(8,14), lo=ri(c.lo,Math.max(c.lo,c.hi-sp)), a=dataUniqueMode(n,lo,lo+sp), s=sortN(a);
+  const th=s[ri(Math.floor(n*0.25),Math.floor(n*0.75))], strict=Math.random()<0.5, cnt=a.filter(x=>strict?x>th:x<=th).length, pct=cnt/n*100;
+  return {t:"แผนภาพจุด · ยาก",type:"num",time:80,unit:"%",tol:0.01,q:`ข้อมูล ${n} คน มีกี่เปอร์เซ็นต์ที่${c.what}<b>${strict?"มากกว่า":"ไม่เกิน"} ${th} ${c.unit}</b>`,
+    fig:()=>dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"}),ans:pct,show:fx(pct),
+    why:`นับได้ ${cnt} คน (${strict?"ไม่รวม":"รวม"} ${th}) → ${cnt}/${n} × 100 = ${fx(pct)}%`};
+}
+function hDotCompare(){
+  const c=pick(CTX); let A,B,rA,rB;
+  do{ const lo=ri(c.lo,Math.max(c.lo,c.hi-12)); A=dataUniqueMode(ri(10,15),lo,lo+ri(5,12)); B=dataUniqueMode(ri(10,15),lo+ri(-2,3),lo+ri(6,13));
+      rA=Math.max(...A)-Math.min(...A); rB=Math.max(...B)-Math.min(...B); }while(rA===rB);
+  const k=Math.random()<0.6?"range":"mode";
+  if(k==="mode"){ const mA=modeInfo(A).mode, mB=modeInfo(B).mode; if(mA===mB) return hDotCompare();
+    return {t:"เปรียบเทียบแผนภาพจุด",type:"num",time:70,unit:c.unit,q:`ฐานนิยมของห้อง ก และห้อง ข <b>ต่างกันเท่าใด</b>`,fig:()=>twoDots(A,B,"ห้อง ก","ห้อง ข",c.what+" ("+c.unit+")"),
+      ans:Math.abs(mA-mB),why:`ฐานนิยมห้อง ก = ${mA} · ห้อง ข = ${mB} → ต่างกัน ${Math.abs(mA-mB)}`}; }
+  return {t:"เปรียบเทียบแผนภาพจุด",type:"num",time:70,unit:c.unit,q:`ห้องที่ข้อมูล<b>กระจายมากกว่า</b> มีพิสัยมากกว่าอีกห้องเท่าใด`,fig:()=>twoDots(A,B,"ห้อง ก","ห้อง ข",c.what+" ("+c.unit+")"),
+    ans:Math.abs(rA-rB),why:`พิสัยห้อง ก = ${Math.max(...A)} − ${Math.min(...A)} = ${rA} · ห้อง ข = ${Math.max(...B)} − ${Math.min(...B)} = ${rB} → ต่างกัน ${Math.abs(rA-rB)}`};
+}
+/* ---------- ต้น-ใบ ---------- */
+function hStemMedian(){
+  const c=pick(SLCTX), n=ri(11,24), lo=ri(c.lo,c.hi-25), a=[]; for(let i=0;i<n;i++) a.push(ri(lo,lo+ri(20,25)));
+  const md=medianOf(a), s=sortN(a);
+  return {t:"ต้น-ใบ · ยาก",type:"num",time:80,unit:c.unit,tol:0.001,q:`จากแผนภาพต้น-ใบของ${c.what} จงหา<b>มัธยฐาน</b>`,
+    fig:()=>stemLeaf(slRows(a),`${n} ข้อมูล · สัญลักษณ์ ${Math.floor(s[0]/10)}|${s[0]%10} หมายถึง ${s[0]}`),ans:md,show:fx(md),
+    why:`n = ${n} ${n%2?`→ ตัวที่ ${(n+1)/2} = ${md}`:`→ ตัวที่ ${n/2} และ ${n/2+1} คือ ${s[n/2-1]}, ${s[n/2]} → ${fx(md)}`}`};
+}
+function hStemMean(){
+  const c=pick(SLCTX), n=10, lo=ri(c.lo,c.hi-22), a=[]; for(let i=0;i<n;i++) a.push(ri(lo,lo+20));
+  const m=sum(a)/n;
+  return {t:"ต้น-ใบ · ยาก",type:"num",time:100,unit:c.unit,tol:0.001,q:`จากแผนภาพต้น-ใบ จงหา<b>ค่าเฉลี่ยเลขคณิต</b>`,
+    fig:()=>stemLeaf(slRows(a),`${c.what} 10 ข้อมูล · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]}`),ans:m,show:fx(m),
+    why:`ผลรวม = ${sortN(a).join(" + ")} = ${sum(a)} → ${sum(a)} ÷ 10 = ${fx(m)}`};
+}
+function hStemTwo(){
+  const c=pick(SLCTX), lo=ri(c.lo,c.hi-26);
+  const A=[],B=[]; const nA=ri(9,13),nB=ri(9,13); for(let i=0;i<nA;i++) A.push(ri(lo,lo+22)); for(let i=0;i<nB;i++) B.push(ri(lo+3,lo+25));
+  const k=pick(["median","range"]);
+  const fig=()=>twoStem(A,B,"กลุ่ม ก","กลุ่ม ข",`${c.what} · สัญลักษณ์ ${Math.floor(A[0]/10)}|${A[0]%10} หมายถึง ${A[0]}`);
+  if(k==="median"){ const a=medianOf(A),b=medianOf(B); if(a===b) return hStemTwo();
+    return {t:"เปรียบเทียบต้น-ใบ",type:"num",time:100,unit:c.unit,tol:0.001,q:`มัธยฐานของกลุ่ม ก และกลุ่ม ข <b>ต่างกันเท่าใด</b>`,fig,ans:Math.abs(a-b),show:fx(Math.abs(a-b)),
+      why:`มัธยฐาน ก (n=${nA}) = ${fx(a)} · มัธยฐาน ข (n=${nB}) = ${fx(b)} → ต่างกัน ${fx(Math.abs(a-b))}`}; }
+  const rA=Math.max(...A)-Math.min(...A), rB=Math.max(...B)-Math.min(...B); if(rA===rB) return hStemTwo();
+  return {t:"เปรียบเทียบต้น-ใบ",type:"num",time:80,unit:c.unit,q:`พิสัยของสองกลุ่ม<b>ต่างกันเท่าใด</b>`,fig,ans:Math.abs(rA-rB),
+    why:`พิสัย ก = ${Math.max(...A)} − ${Math.min(...A)} = ${rA} · พิสัย ข = ${Math.max(...B)} − ${Math.min(...B)} = ${rB} → ต่างกัน ${Math.abs(rA-rB)}`};
+}
+/* ---------- ฮิสโทแกรม & ตาราง ---------- */
+function hHistPct(){
+  const c=pick(HCTX), k=ri(5,6), s0=pick(c.s), N=pick([20,25,40,50]), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
+  const fr=splitN(N,k,1), j=ri(1,k-1), ge=Math.random()<0.5, cnt=ge?sum(fr.slice(j)):sum(fr.slice(0,j)), pct=cnt/N*100;
+  const ymax=Math.ceil(Math.max(...fr)/2)*2+2, ys=ymax>14?4:2;
+  return {t:"ฮิสโทแกรม · ยาก",type:"num",time:90,unit:"%",tol:0.01,q:`คนที่${c.what.split(" (")[0]}<b>${ge?"ตั้งแต่ "+edges[j]+" ขึ้นไป":"น้อยกว่า "+edges[j]}</b> คิดเป็นร้อยละเท่าใดของทั้งหมด`,
+    fig:()=>histo({edges,freqs:fr,ymax,ystep:ys,xlabel:c.what,ylabel:"ความถี่ (คน)"}),ans:pct,show:fx(pct),
+    why:`ทั้งหมด ${fr.join(" + ")} = ${N} คน · ที่ต้องการ ${cnt} คน → ${cnt}/${N} × 100 = ${fx(pct)}%`};
+}
+function hHistMedianClass(){
+  const c=pick(HCTX), k=ri(5,6), s0=pick(c.s), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
+  let fr,N,b1,b2; do{ fr=[]; for(let i=0;i<k;i++) fr.push(ri(1,11)); N=sum(fr);
+    const pos=p=>{ let acc=0; for(let i=0;i<k;i++){ acc+=fr[i]; if(p<=acc) return i; } };
+    if(N%2){ b1=b2=pos((N+1)/2); } else { b1=pos(N/2); b2=pos(N/2+1); } }while(b1!==b2);
+  const lab=i=>`${edges[i]} – ${edges[i+1]}`, others=shuffle([...Array(k).keys()].filter(i=>i!==b1)).slice(0,3);
+  let acc=0; const cum=fr.map(f=>acc+=f);
+  return {t:"ฮิสโทแกรม · ยาก",type:"mc",time:90,q:`<b>มัธยฐาน</b>ของข้อมูลนี้อยู่ในช่วงใด`,
+    fig:()=>histo({edges,freqs:fr,ymax:Math.ceil(Math.max(...fr)/2)*2+2,ystep:2,xlabel:c.what,ylabel:"ความถี่ (คน)",showN:true}),
+    choices:[lab(b1),...others.map(lab)],why:`N = ${N} → มัธยฐานอยู่ตำแหน่งที่ ${N%2?(N+1)/2:N/2+"–"+(N/2+1)} · ความถี่สะสม ${cum.join(", ")} → ตกในช่วง ${lab(b1)}`};
+}
+function hFreqMissing(){
+  for(let t=0;t<300;t++){
+    const x0=ri(1,6), k=ri(4,5), xs=[...Array(k).keys()].map(i=>x0+i), f=xs.map(()=>ri(1,9)), h=ri(0,k-1);
+    const S=sum(xs.map((x,i)=>x*f[i])), N=sum(f), M=S/N;
+    if(!okDec(M,1)||Math.abs(xs[h]-M)<1e-9) continue;
+    return {t:"ตารางความถี่ · ยาก",type:"num",time:110,unit:"",q:`ตารางแจกแจงความถี่มีค่าเฉลี่ยเลขคณิตเท่ากับ <b>${fx(M,1)}</b> จงหาความถี่ที่หายไป (?)`,
+      fig:()=>hTable("ค่า (x)",xs,"ความถี่ (f)",f.map((v,i)=>i===h?"?":v)),ans:f[h],
+      why:`ให้ ? = f · (Σxf ที่รู้ + ${xs[h]}f) ÷ (Σf ที่รู้ + f) = ${fx(M,1)} → ${S-xs[h]*f[h]} + ${xs[h]}f = ${fx(M,1)}(${N-f[h]} + f) → f = ${f[h]}`};
+  }
+  return hFreqMissing();
+}
+/* ---------- ค่าเฉลี่ย ---------- */
+function hMeanFix(){
+  const n=pick([10,20,25,50]), m=ri(40,80), a=ri(30,95); let b; do{ b=Number(String(a).split("").reverse().join("")); }while(false);
+  if(b===a) b=a+pick([9,-9,10,-10]);
+  const M=(n*m-b+a)/n;
+  return {t:"ค่าเฉลี่ย · ยาก",type:"num",time:90,unit:"คะแนน",tol:0.001,q:`คะแนนเฉลี่ยของนักเรียน ${n} คนคือ ${m} ต่อมาพบว่า<b>บันทึกคะแนน ${a} ผิดเป็น ${b}</b> ค่าเฉลี่ยที่ถูกต้องเป็นเท่าใด`,
+    fig:()=>`<div class="pic"><div class="grp"><div class="em">📝</div>${n} คน เฉลี่ย <b>${m}</b></div><div class="grp"><div class="em">✏️</div>ที่ถูก <b>${a}</b><br>บันทึกเป็น <b style="color:#c0392b">${b}</b></div></div>`,
+    ans:M,show:fx(M),why:`ผลรวมเดิม ${n}×${m} = ${n*m} → แก้ให้ถูก ${n*m} − ${b} + ${a} = ${n*m-b+a} → ÷ ${n} = ${fx(M)}`};
+}
+function hMeanRemove(){
+  for(let t=0;t<100;t++){ const n=ri(6,15), m=ri(30,70), m2=m+pick([-3,-2,-1,1,2,3]), x=n*m-(n-1)*m2;
+    if(x<1||x>150) continue;
+    return {t:"ค่าเฉลี่ย · ยาก",type:"num",time:90,unit:"",q:`ข้อมูล ${n} จำนวนมีค่าเฉลี่ย ${m} เมื่อ<b>ตัดออก 1 จำนวน</b> ค่าเฉลี่ยของที่เหลือเป็น ${m2} จำนวนที่ตัดออกคือเท่าใด`,
+      fig:()=>`<div class="pic"><div class="grp"><div class="em">🔢</div>${n} จำนวน เฉลี่ย <b>${m}</b></div><div class="grp"><div class="em">✂️</div>เหลือ ${n-1} จำนวน เฉลี่ย <b>${m2}</b></div></div>`,
+      ans:x,why:`ผลรวมเดิม ${n}×${m} = ${n*m} · ผลรวมที่เหลือ ${n-1}×${m2} = ${(n-1)*m2} → ตัดออก ${n*m} − ${(n-1)*m2} = ${x}`}; }
+  return hMeanRemove();
+}
+function hMeanThree(){
+  for(let t=0;t<300;t++){ const ns=[ri(5,20),ri(5,20),ri(5,20)], ms=[ri(40,85),ri(40,85),ri(40,85)], T=sum(ns.map((v,i)=>v*ms[i])), N=sum(ns), M=T/N;
+    if(!okDec(M,1)) continue;
+    return {t:"ค่าเฉลี่ย · ยาก",type:"num",time:100,unit:"คะแนน",tol:0.001,q:`สามห้องสอบวิชาเดียวกัน จงหา<b>คะแนนเฉลี่ยรวมทั้งสามห้อง</b>`,
+      fig:()=>table(["ห้อง","จำนวนนักเรียน","คะแนนเฉลี่ย"],ns.map((v,i)=>["ม.2/"+(i+1),v,ms[i]])),ans:M,show:fx(M,1),
+      why:`(${ns.map((v,i)=>v+"×"+ms[i]).join(" + ")}) ÷ ${N} = ${T} ÷ ${N} = ${fx(M,1)} (ห้ามเอาค่าเฉลี่ย 3 ห้องมาเฉลี่ยกันตรง ๆ)`}; }
+  return hMeanThree();
+}
+function hGpaNeed(){
+  for(let t=0;t<300;t++){ const k=ri(3,4), gs=[...Array(k)].map(()=>pick([2.5,3,3.25,3.5,3.75,4])), cs=[...Array(k)].map(()=>pick([14,15,15.5,16,16.5]));
+    const P=sum(gs.map((g,i)=>g*cs[i])), C=sum(cs), c=pick([15,16]), T=pick([3.25,3.4,3.5,3.6]), g=(T*(C+c)-P)/c;
+    if(g<1||g>4) continue;
+    return {t:"ค่าเฉลี่ยถ่วงน้ำหนัก · ยาก",type:"num",time:150,unit:"",tol:0.006,q:`ภาคเรียนหน้าลงทะเบียน ${c} หน่วยกิต ต้องได้ผลการเรียนเฉลี่ยเท่าใด <b>ผลการเรียนเฉลี่ยรวมทุกภาคจึงเป็น ${T.toFixed(2)}</b> (ตอบทศนิยม 2 ตำแหน่ง)`,
+      fig:()=>table(["ภาคเรียน","ผลการเรียนเฉลี่ย","หน่วยกิต"],gs.map((g,i)=>["ภาค "+(i+1),g.toFixed(2),cs[i]]).concat([["ภาคหน้า","?",c]])),ans:g,show:g.toFixed(2),
+      why:`ต้องมีแต้มรวม ${T.toFixed(2)} × ${C+c} = ${fx(T*(C+c))} · มีแล้ว ${fx(P)} → ขาด ${fx(T*(C+c)-P)} ÷ ${c} ≈ ${g.toFixed(2)}`}; }
+  return hGpaNeed();
+}
+/* ---------- มัธยฐาน ฐานนิยม ---------- */
+function hMedianUnknown(){
+  for(let t=0;t<200;t++){ const n=pick([5,7,9]), m=ri(20,60), a=[]; for(let i=0;i<n-1;i++) a.push(ri(m-15,m+15)); const x=n*m-sum(a);
+    if(x<1||x>120) continue; const all=a.concat([x]), md=medianOf(all);
+    return {t:"มัธยฐาน · ยาก",type:"num",time:110,unit:"",q:`ข้อมูล ${n} จำนวนนี้มี<b>ค่าเฉลี่ยเลขคณิต ${m}</b> จงหา<b>มัธยฐาน</b>ของข้อมูลชุดนี้`,
+      fig:()=>cards(a.concat(["x"]),v=>v==="x"),ans:md,
+      why:`หา x ก่อน: ${n}×${m} − ${sum(a)} = ${x} · เรียง ${sortN(all).join(", ")} → มัธยฐาน (ตัวที่ ${(n+1)/2}) = ${md}`}; }
+  return hMedianUnknown();
+}
+function hCenterCompare(){
+  for(let t=0;t<300;t++){ const a=dataUniqueMode(10,ri(10,30),ri(35,60)); a.push(ri(70,99)); a.splice(ri(0,9),1);
+    const mi=modeInfo(a); if(!mi.unique) continue; const M=sum(a)/10, md=medianOf(a), mo=mi.mode;
+    const vals=[["ค่าเฉลี่ยเลขคณิต",M],["มัธยฐาน",md],["ฐานนิยม",mo]]; const xs=vals.map(v=>v[1]);
+    if(new Set(xs.map(v=>fx(v))).size<3) continue;
+    const big=Math.random()<0.5, sel=vals.slice().sort((p,q)=>big?q[1]-p[1]:p[1]-q[1])[0];
+    const choices=[sel[0]].concat(vals.filter(v=>v!==sel).map(v=>v[0])).concat(["ทั้งสามค่าเท่ากัน"]);
+    return {t:"ค่ากลาง · ยาก",type:"mc",time:120,q:`ค่ากลางใดของข้อมูลชุดนี้มีค่า<b>${big?"มากที่สุด":"น้อยที่สุด"}</b>`,fig:()=>cards(a),choices,
+      why:`ค่าเฉลี่ย = ${sum(a)}÷10 = ${fx(M)} · มัธยฐาน = ${fx(md)} · ฐานนิยม = ${mo} → ${sel[0]}${big?"มาก":"น้อย"}ที่สุด`}; }
+  return hCenterCompare();
+}
+function hOutlierEffect(){
+  const a=[]; const b=ri(30,60), n=ri(7,9); for(let i=0;i<n;i++) a.push(b+ri(-6,6)); const o=b*ri(5,12);
+  const M1=sum(a)/n, M2=(sum(a)+o)/(n+1), d1=medianOf(a), d2=medianOf(a.concat([o]));
+  return {t:"ค่ากลาง · ยาก",type:"mc",time:60,q:`ถ้าเพิ่มข้อมูล <b>${o}</b> เข้าไปในชุดนี้ ค่ากลางใด<b>เปลี่ยนแปลงมากที่สุด</b>`,fig:()=>cards(a.concat([o]),v=>v===o),
+    choices:["ค่าเฉลี่ยเลขคณิต","มัธยฐาน","ฐานนิยม","ไม่มีค่าใดเปลี่ยน"],
+    why:`ค่าเฉลี่ยเปลี่ยนจาก ${fx(M1)} เป็น ${fx(M2)} แต่มัธยฐานเปลี่ยนจาก ${fx(d1)} เป็นแค่ ${fx(d2)} → ค่าเฉลี่ยไวต่อค่าผิดปกติที่สุด`};
+}
+const HARD_STAGES=[
+ {id:"16",name:"แผนภาพจุด (ยาก)",icon:"🔥",gens:[hDotMedian,hDotPct,hDotCompare]},
+ {id:"17",name:"แผนภาพต้น-ใบ (ยาก)",icon:"🔥",gens:[hStemMedian,hStemMean,hStemTwo]},
+ {id:"18",name:"ฮิสโทแกรม & ตารางความถี่ (ยาก)",icon:"🔥",gens:[hHistPct,hHistMedianClass,hFreqMissing]},
+ {id:"19",name:"ค่าเฉลี่ยเลขคณิต (ยาก)",icon:"🔥",gens:[hMeanFix,hMeanRemove,hMeanThree,hGpaNeed]},
+ {id:"20",name:"มัธยฐาน & ฐานนิยม (ยาก)",icon:"🔥",gens:[hMedianUnknown,hCenterCompare,hOutlierEffect,hStemMedian]},
+ {id:"21",name:"ผสมระดับท้าทาย",icon:"💀",gens:[hDotMedian,hDotPct,hDotCompare,hStemMedian,hStemMean,hStemTwo,hHistPct,hHistMedianClass,hFreqMissing,hMeanFix,hMeanRemove,hMeanThree,hGpaNeed,hMedianUnknown,hCenterCompare,hOutlierEffect]}
+];
+
 /* ================= ด่าน ================= */
 const EXTRA=[
  {t:"ตารางความถี่",type:"num",time:40,unit:"คน",
@@ -750,6 +943,7 @@ const ALLQ=STAGES.flatMap(s=>s.qs);
 STAGES.push({id:"all",name:"รวมโจทย์จากหนังสือ",icon:"📘",qs:ALLQ});
 STAGES.forEach(s=>{ s.book=true; s.n=s.qs.length; s.make=()=>s.qs.slice(); });
 GEN_STAGES.forEach(s=>{ s.n=10; s.make=()=>genQs(s.gens,10); STAGES.push(s); });
+HARD_STAGES.forEach(s=>{ s.hard=true; s.n=10; s.make=()=>genQs(s.gens,10); STAGES.push(s); });
 const stLabel=s=>(s.id==="all"?"":"ด่าน "+s.id+" · ")+s.name;
 const stageById=id=>STAGES.find(s=>s.id===String(id));
 
@@ -799,6 +993,23 @@ function setSound(on){
   if(AU.master) AU.master.gain.value=on?AU.vol:0;
   document.querySelectorAll(".sndbtn").forEach(b=>b.textContent=on?"🔊":"🔇");
 }
+
+/* ================= ขนาดตัวอักษร ================= */
+const SIZES=[["เล็ก",0.9],["ปกติ",1],["ใหญ่",1.15],["ใหญ่มาก",1.3]];
+let sizeI=1; try{ const v=+localStorage.getItem("tmx_arena_size"); if(v>=0&&v<SIZES.length) sizeI=v; }catch(e){}
+function applySize(i){
+  sizeI=i; try{ localStorage.setItem("tmx_arena_size",String(i)); }catch(e){}
+  document.body.style.zoom=SIZES[i][1];
+  document.querySelectorAll("#sizes button").forEach((b,j)=>b.classList.toggle("on",j===i));
+  const g=$("gsize"); if(g) g.textContent="Aa "+SIZES[i][0];
+}
+function sizeBar(){ $("sizes").innerHTML=`<span>ขนาดตัวอักษร</span>`+SIZES.map((x,i)=>`<button data-i="${i}" style="font-size:${12+i*2}px">${x[0]}</button>`).join("");
+  $("sizes").onclick=e=>{ const b=e.target.closest("button"); if(b) applySize(+b.dataset.i); }; applySize(sizeI); }
+$("gsize").onclick=()=>applySize((sizeI+1)%SIZES.length);
+
+/* ================= QR code ================= */
+function qrSvg(text){ try{ const q=qrcode(0,"M"); q.addData(text); q.make(); return q.createSvgTag({cellSize:6,margin:2,scalable:true}); }catch(e){ return ""; } }
+const joinLink=r=>location.href.split("?")[0].split("#")[0]+"?room="+r;
 
 /* ================= เซิร์ฟเวอร์ (JSONP → Apps Script) ================= */
 const qp=new URLSearchParams(location.search);
@@ -851,7 +1062,7 @@ async function syncBests(){
 
 /* ================= หน้าแรก ================= */
 let tab="s";
-function show(id){ ["home","live","game"].forEach(x=>$(x).classList.toggle("hide",x!==id)); window.scrollTo(0,0); }
+function show(id){ ["home","live","game"].forEach(x=>$(x).classList.toggle("hide",x!==id)); document.body.classList.toggle("ingame",id==="game"); window.scrollTo(0,0); }
 function netbar(){
   const el=$("netbar"); el.className="netbar "+(online?"on":(API?"off":""));
   el.innerHTML=`<span class="dot"></span><span>${esc(netMsg)}</span>`+(API?`<button id="rf">ลองใหม่</button>`:"")+(API&&!online?`<button id="dg">ทำไม?</button>`:"");
@@ -877,10 +1088,12 @@ function home(){
       <div class="ssub">${s.n} ข้อ${b?` · สูงสุด <b>${nf(b.score)}</b> (ถูก ${b.correct}/${b.total})`:" · ยังไม่เคยเล่น"}</div></div>
       <button class="btn pri sm" data-st="${s.id}">เล่น</button></div>`; };
   $("stages").innerHTML=`<div class="grph">📘 โจทย์จากหนังสือเรียน</div>`+STAGES.filter(s=>s.book).map(card).join("")+
-    `<div class="grph">🎲 ฝึกเพิ่ม · สุ่มตัวเลขและรูปใหม่ทุกครั้ง (ด่านละ 10 ข้อ)</div>`+STAGES.filter(s=>!s.book).map(card).join("");
+    `<div class="grph">🎲 ฝึกเพิ่ม · สุ่มตัวเลขและรูปใหม่ทุกครั้ง (ด่านละ 10 ข้อ)</div>`+STAGES.filter(s=>!s.book&&!s.hard).map(card).join("")+
+    `<div class="grph hardh">🔥 ระดับท้าทาย · คิดหลายขั้น (ด่านละ 10 ข้อ)</div>`+STAGES.filter(s=>s.hard).map(card).join("");
   [...document.querySelectorAll("#stages [data-st]")].forEach(b=>b.onclick=()=>needPlayer(()=>start(b.dataset.st,null)));
   $("rstage").innerHTML=`<optgroup label="โจทย์จากหนังสือ">`+STAGES.filter(s=>s.book).map(s=>`<option value="${s.id}">${stLabel(s)} (${s.n} ข้อ)</option>`).join("")+
-    `</optgroup><optgroup label="สุ่มโจทย์ใหม่ (แต่ละคนได้ตัวเลขไม่ซ้ำกัน)">`+STAGES.filter(s=>!s.book).map(s=>`<option value="${s.id}">${stLabel(s)} (10 ข้อ)</option>`).join("")+"</optgroup>";
+    `</optgroup><optgroup label="สุ่มโจทย์ใหม่ (แต่ละคนได้ตัวเลขไม่ซ้ำกัน)">`+STAGES.filter(s=>!s.book&&!s.hard).map(s=>`<option value="${s.id}">${stLabel(s)} (10 ข้อ)</option>`).join("")+
+    `</optgroup><optgroup label="🔥 ระดับท้าทาย">`+STAGES.filter(s=>s.hard).map(s=>`<option value="${s.id}">${stLabel(s)} (10 ข้อ)</option>`).join("")+"</optgroup>";
 }
 $("tabS").onclick=()=>{ tab="s"; home(); };
 $("tabT").onclick=()=>{ tab="t"; home(); };
@@ -889,15 +1102,17 @@ $("snd").onclick=()=>{ auInit(); setSound(!AU.on); };
 $("gsnd").onclick=()=>{ auInit(); setSound(!AU.on); if(AU.on&&timer) musicStart(); };
 
 function needPlayer(then){ if(me) return then(); makePlayer(then); }
-function makePlayer(then){
+function makePlayer(then,room){
   const taken=[]; let av=AVATARS[Math.floor(Math.random()*AVATARS.length)];
   $("modal").classList.remove("hide");
-  $("mbox").innerHTML=`<h3>✨ สร้างรหัสผู้เล่น</h3>
-    <p class="mdim">ใส่ชื่อเล่น เลือกอวตาร แล้วจะได้รหัส 6 ตัว ใช้เข้าเล่นได้ทุกห้อง</p>
+  $("mbox").innerHTML=(room?`<h3>🚪 เข้าห้อง ${esc(room)}</h3>
+    <p class="mdim">ใส่ชื่อเล่นและเลือกอวตาร แล้วเข้าเล่นได้เลย<br><a class="linkbtn" id="havec" style="margin-top:4px">มีรหัสผู้เล่นอยู่แล้ว? แตะตรงนี้</a></p>`:`<h3>✨ สร้างรหัสผู้เล่น</h3>
+    <p class="mdim">ใส่ชื่อเล่น เลือกอวตาร แล้วจะได้รหัส 6 ตัว ใช้เข้าเล่นได้ทุกห้อง</p>`)+`
     <input class="nameinp" id="nm" maxlength="16" placeholder="ชื่อเล่นของฉัน" autocomplete="off">
     <div class="avpick" id="ap">${AVATARS.map(a=>`<button data-a="${a}" class="${a===av?"on":""}">${a}</button>`).join("")}</div>
     <div class="warn" id="wn"></div>
-    <div class="mopts"><button class="pri" id="go">สร้างรหัส</button><button id="cx">ยกเลิก</button></div>`;
+    <div class="mopts"><button class="pri" id="go">${room?"เข้าเล่น ▶":"สร้างรหัส"}</button><button id="cx">ยกเลิก</button></div>`;
+  if($("havec")) $("havec").onclick=()=>enterCode(then);
   $("ap").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; av=b.dataset.a; [...$("ap").children].forEach(x=>x.classList.toggle("on",x===b)); };
   $("cx").onclick=()=>home();
   $("go").onclick=async()=>{
@@ -905,6 +1120,7 @@ function makePlayer(then){
     $("go").disabled=true; $("wn").style.color="var(--dim)"; $("wn").textContent="กำลังสร้างรหัส…";
     try{ const d=await api({action:"pnew",name:nm,av:av});
       if(!d.ok) throw new Error(d.err); me=d.player; saveMe(); bests={}; saveBests(); netMsg="เชื่อมต่อเซิร์ฟเวอร์แล้ว";
+      if(room){ $("modal").classList.add("hide"); if(then) then(); return; }
       $("mbox").innerHTML=`<div class="bigem">${esc(me.av)}</div><h3>สวัสดี ${esc(me.name)}!</h3>
         <p class="mdim">รหัสผู้เล่นของเธอคือ</p><div class="bigcode">${esc(me.code)}</div>
         <p class="mdim">📝 จดหรือแคปหน้าจอเก็บไว้ ถ้าเปลี่ยนเครื่องให้กด “มีรหัสแล้ว” แล้วใส่รหัสนี้</p>
@@ -936,7 +1152,7 @@ function enterCode(then){
 /* ---------- เข้าห้อง (นักเรียน) ---------- */
 $("joinbtn").onclick=()=>{
   const r=$("roomin").value.trim(); if(!/^\d{5}$/.test(r)){ $("jwarn").textContent="รหัสห้องมี 5 หลัก"; return; }
-  needPlayer(()=>joinRoom(r));
+  if(me) joinRoom(r); else makePlayer(()=>joinRoom(r),r);
 };
 async function joinRoom(r){
   if(me.local){ $("jwarn").textContent="ผู้เล่นออฟไลน์เข้าห้องไม่ได้ — สร้างรหัสผู้เล่นออนไลน์ก่อน"; return; }
@@ -961,8 +1177,9 @@ async function openLive(r,teacher){
   stopTimer(); musicStop(); $("modal").classList.add("hide"); $("fb").classList.add("hide");
   liveRoom=r; show("live"); document.body.classList.toggle("tv",!!teacher);
   $("lcode").textContent=r;
-  const link=location.href.split("?")[0].split("#")[0]+"?room="+r;
-  $("llink").textContent=/^https?:/.test(link)?link:"เปิดไฟล์เกม → แท็บนักเรียน → ใส่รหัสห้อง "+r;
+  const link=joinLink(r), web=/^https?:/.test(link);
+  $("llink").textContent=web?link.replace(/^https?:\/\//,""):"เปิดเกม → แท็บนักเรียน → ใส่รหัสห้อง "+r;
+  $("lqr").innerHTML=web?qrSvg(link):""; $("lqr").classList.toggle("hide",!web);
   $("ltable").innerHTML=`<p class="mdim">กำลังโหลด…</p>`;
   clearInterval(livePoll); await liveTick(); livePoll=setInterval(liveTick,3500);
 }
@@ -1130,6 +1347,7 @@ async function finish(){
     <p style="color:var(--dim);line-height:1.85;margin:4px 0">ถูก <b style="color:var(--tx)">${correct}/${total}</b> ข้อ · ถูกตั้งแต่ครั้งแรก ${firstTry} ข้อ · เวลารวม ${fmt(msR)}<br>
       <span style="font-size:24px;color:var(--acc)">รวม <b>${nf(score)}</b> คะแนน</span></p>
     ${practice?'<p class="mdim">โหมดซ้อม ไม่บันทึกคะแนน</p>':better?'<p style="color:var(--ok);margin:4px 0">🏅 สถิติใหม่ของด่านนี้!</p>':`<p class="mdim">สถิติสูงสุดด่านนี้ ${nf(bests[ST.id].score)} คะแนน</p>`}
+    ${me&&!me.local?`<p class="mdim" style="margin:4px 0">รหัสผู้เล่นของเธอ <b class="pcode">${esc(me.code)}</b> · จดไว้ใช้เครื่องอื่น</p>`:""}
     <p id="sync" style="font-size:13px;margin:4px 0"></p>
     <div class="review">${log.map(x=>`<div class="${x.ok?"o":"x"}">${x.ok?(x.first?"✓":"✓·"):"✗"} ข้อ ${x.q} · ${esc(x.t)} <span class="rn">${x.net>=0?"+":""}${x.net}</span>${x.ok?"":` <span class="mdim">(ที่ถูก ${esc(x.right)})</span>`}</div>`).join("")}</div>
     <div class="mopts">${ROOMINFO?`<button class="pri" id="rk">📺 ดูอันดับในห้อง</button>`:""}
@@ -1150,10 +1368,10 @@ async function finish(){
   $("jswarn").style.display="none";
   const r=(qp.get("room")||"").replace(/\D/g,"").slice(0,5), v=(qp.get("view")||"").replace(/\D/g,"").slice(0,5);
   if(r) $("roomin").value=r;
-  netMsg="กำลังเชื่อมต่อเซิร์ฟเวอร์…"; home();
+  sizeBar(); netMsg="กำลังเชื่อมต่อเซิร์ฟเวอร์…"; home();
   await ping(); await syncBests(); home();
   if(v) openLive(v,true);
-  else if(r && me && !me.local && online) joinRoom(r);
+  else if(r && online){ if(me && !me.local) joinRoom(r); else { me=null; makePlayer(()=>joinRoom(r),r); } }
 })();
 
 </script>
