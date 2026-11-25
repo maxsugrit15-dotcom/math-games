@@ -210,6 +210,12 @@ body.tv .wrap{max-width:1100px}
 #fb .pts.neg{color:#ff9aa2}
 .review .rn{color:var(--gold);font-variant-numeric:tabular-nums}
 
+/* scene + people cards */
+.scene{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#1f2a44;background:linear-gradient(90deg,#e6eeff,#f6f0ff);
+ border-radius:10px;padding:6px 10px;margin-bottom:8px}
+.scene .si{font-size:24px;line-height:1}
+.cards.ppl span{display:flex;flex-direction:column;align-items:center;min-width:56px;padding:4px 10px 6px}
+.cards.ppl i{font-style:normal;font-size:20px;line-height:1.2}
 /* size + ipad */
 .topline{align-items:center;gap:8px;justify-content:space-between}
 .sizes{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
@@ -341,7 +347,7 @@ function dotPlot(o){
   const n=Math.round((o.max-o.min)/o.step);
   for(let i=0;i<=n;i++){
     const x=r2(o.min+i*o.step),X=sx(x),lab=o.labelEvery?Math.abs(x/o.labelEvery-Math.round(x/o.labelEvery))<1e-6:true;
-    s+=`<line x1="${X}" y1="${ay}" x2="${X}" y2="${ay+(lab?8:5)}" stroke="${INK}" stroke-width="1.6"/>`;
+    s+=`<line x1="${X}" y1="14" x2="${X}" y2="${ay}" stroke="${GRID}" stroke-width="1" stroke-dasharray="3 4"/><line x1="${X}" y1="${ay}" x2="${X}" y2="${ay+(lab?8:5)}" stroke="${INK}" stroke-width="1.6"/>`;
     if(lab) s+=`<text x="${X}" y="${ay+29}" font-size="21" text-anchor="middle" fill="${INK}">${x}</text>`;
   }
   for(const [k,c] of Object.entries(o.counts)){const X=sx(+k);
@@ -547,6 +553,9 @@ const Q=[
 
 
 /* ================= ตัวสร้างโจทย์อัตโนมัติ (สุ่มข้อมูลใหม่ทุกครั้ง) ================= */
+const MCTX=[{icon:"📝",what:"คะแนนสอบ"},{icon:"⚖️",what:"น้ำหนัก (กก.)"},{icon:"🛒",what:"ราคาสินค้า (บาท)"},{icon:"🏃",what:"เวลาวิ่ง (วินาที)"},{icon:"🌡️",what:"อุณหภูมิ (°C)"},{icon:"📦",what:"จำนวนพัสดุที่ส่ง (ชิ้น)"}];
+function scene(icon,title,inner){ return `<div class="scene"><span class="si">${icon}</span><span>${title}</span></div>`+inner; }
+const cardsP=(arr,icon,out)=>`<div class="cards ppl">${arr.map(v=>`<span${out&&out(v)?' class="out"':''}><i>${icon}</i>${v}</span>`).join("")}</div>`;
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const sum=a=>a.reduce((s,x)=>s+x,0);
@@ -572,32 +581,32 @@ function numChoices(ans,alts,fmtF){
   return out;
 }
 const CTX=[
-  {what:"คะแนนสอบย่อยวิชาคณิตศาสตร์",unit:"คะแนน",lo:8,hi:30,who:"นักเรียน"},
-  {what:"ความสูงของนักเรียน",unit:"ซม.",lo:145,hi:172,who:"นักเรียน"},
-  {what:"เวลาวิ่ง 100 เมตร",unit:"วินาที",lo:12,hi:24,who:"นักเรียน"},
-  {what:"จำนวนหนังสือที่อ่านในเดือนนี้",unit:"เล่ม",lo:0,hi:14,who:"นักเรียน"},
-  {what:"น้ำหนักกระเป๋านักเรียน",unit:"กก.",lo:2,hi:12,who:"นักเรียน"},
-  {what:"จำนวนชั่วโมงเล่นเกมต่อสัปดาห์",unit:"ชั่วโมง",lo:0,hi:16,who:"นักเรียน"},
-  {what:"อายุของสมาชิกชมรมวิ่ง",unit:"ปี",lo:12,hi:30,who:"สมาชิก"},
-  {what:"จำนวนแก้วน้ำที่ดื่มต่อวัน",unit:"แก้ว",lo:2,hi:12,who:"คน"}
+  {icon:"📝",what:"คะแนนสอบย่อยวิชาคณิตศาสตร์",unit:"คะแนน",lo:8,hi:30,who:"นักเรียน"},
+  {icon:"📏",what:"ความสูงของนักเรียน",unit:"ซม.",lo:145,hi:172,who:"นักเรียน"},
+  {icon:"🏃",what:"เวลาวิ่ง 100 เมตร",unit:"วินาที",lo:12,hi:24,who:"นักเรียน"},
+  {icon:"📚",what:"จำนวนหนังสือที่อ่านในเดือนนี้",unit:"เล่ม",lo:0,hi:14,who:"นักเรียน"},
+  {icon:"🎒",what:"น้ำหนักกระเป๋านักเรียน",unit:"กก.",lo:2,hi:12,who:"นักเรียน"},
+  {icon:"🎮",what:"จำนวนชั่วโมงเล่นเกมต่อสัปดาห์",unit:"ชั่วโมง",lo:0,hi:16,who:"นักเรียน"},
+  {icon:"👟",what:"อายุของสมาชิกชมรมวิ่ง",unit:"ปี",lo:12,hi:30,who:"สมาชิก"},
+  {icon:"🥤",what:"จำนวนแก้วน้ำที่ดื่มต่อวัน",unit:"แก้ว",lo:2,hi:12,who:"คน"}
 ];
-function axisFor(a){ const mn=Math.min(...a),mx=Math.max(...a),sp=mx-mn+2; return {min:mn,max:mx,step:1,labelEvery:sp<=13?1:sp<=26?2:5,r:sp>26?5.6:7,gap:sp>26?13:15}; }
+function axisFor(a){ const mn=Math.min(...a),mx=Math.max(...a),sp=mx-mn+2; return {min:mn,max:mx,step:1,labelEvery:sp<=17?1:sp<=30?2:5,r:sp>26?5.6:7,gap:sp>26?13:15}; }
 
 /* ---------- G1 แผนภาพจุด: สูงสุด ต่ำสุด พิสัย ---------- */
-function gDotRange(){
-  const c=pick(CTX), n=ri(14,24), sp=ri(8,Math.min(20,c.hi-c.lo)), lo=ri(c.lo,c.hi-sp);
+function gDotRange(sub){
+  const c=pick(CTX), n=ri(17,22), sp=Math.min(ri(10,13),c.hi-c.lo), lo=ri(c.lo,c.hi-sp);
   const a=[]; for(let i=0;i<n;i++) a.push(ri(lo,lo+sp)); a[0]=lo; a[1]=lo+sp;
-  const mx=Math.max(...a),mn=Math.min(...a), k=pick(["max","min","range","range"]);
-  const fig=()=>dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"});
+  const mx=Math.max(...a),mn=Math.min(...a), k=sub||pick(["max","min","range","range"]);
+  const fig=()=>scene(c.icon,c.what+" · "+c.who+" "+a.length+" คน",dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"}));
   const L={max:["ค่าสูงสุด",mx],min:["ค่าต่ำสุด",mn],range:["พิสัย",mx-mn]}[k];
   return {t:"แผนภาพจุด",type:"num",time:30,unit:c.unit,q:`แผนภาพจุดแสดง${c.what}ของ${c.who} ${n} คน จงหา<b>${L[0]}</b>`,fig,ans:L[1],
     why:k==="range"?`พิสัย = ค่าสูงสุด − ค่าต่ำสุด = ${mx} − ${mn} = ${mx-mn}`:`${L[0]}คือจุด${k==="max"?"ขวา":"ซ้าย"}สุด = ${L[1]}`};
 }
 /* ---------- G2 แผนภาพจุด: ฐานนิยม / นับจำนวน ---------- */
-function gDotCount(){
-  const c=pick(CTX), n=ri(15,25), sp=ri(6,12), lo=ri(c.lo,Math.max(c.lo,c.hi-sp));
-  const a=dataUniqueMode(n,lo,lo+sp), mi=modeInfo(a), fig=()=>dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"});
-  const k=pick(["mode","ge","le","eq","total"]);
+function gDotCount(sub){
+  const c=pick(CTX), n=ri(18,22), sp=Math.min(ri(8,10),c.hi-c.lo), lo=ri(c.lo,Math.max(c.lo,c.hi-sp));
+  const a=dataUniqueMode(n,lo,lo+sp), mi=modeInfo(a), fig=()=>scene(c.icon,c.what+" · "+c.who+" "+a.length+" คน",dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"}));
+  const k=sub||pick(["mode","ge","le","eq","total"]);
   if(k==="mode") return {t:"แผนภาพจุด",type:"num",time:25,unit:c.unit,q:`${c.who}<b>ส่วนใหญ่</b>มี${c.what}เท่าใด`,fig,ans:mi.mode,why:`ที่ ${mi.mode} มีจุดซ้อนสูงสุด ${mi.count} จุด`};
   if(k==="total") return {t:"แผนภาพจุด",type:"num",time:30,unit:"คน",q:`แผนภาพจุดแสดง${c.what} มีข้อมูล<b>ทั้งหมด</b>กี่คน`,fig,ans:n,why:`นับจุดทั้งหมดได้ ${n} จุด`};
   const s=sortN(a), th=s[ri(3,n-4)];
@@ -610,36 +619,36 @@ function gDotCount(){
 /* ---------- ต้น-ใบ ---------- */
 function slRows(a){ const st=a.map(x=>Math.floor(x/10)), s0=Math.min(...st), s1=Math.max(...st), rows=[];
   for(let s=s0;s<=s1;s++) rows.push([String(s),sortN(a.filter(x=>Math.floor(x/10)===s)).map(x=>x%10).join("")]); return rows; }
-const SLCTX=[{what:"คะแนนสอบ (เต็ม 60)",unit:"คะแนน",lo:18,hi:60},{what:"น้ำหนักนักเรียน",unit:"กก.",lo:35,hi:72},
-  {what:"จำนวนครั้งกระโดดเชือกใน 1 นาที",unit:"ครั้ง",lo:30,hi:95},{what:"อายุผู้มาใช้บริการห้องสมุด",unit:"ปี",lo:12,hi:58}];
-function gStemRead(){
-  const c=pick(SLCTX), n=ri(15,26), lo=ri(c.lo,c.hi-25), hi=lo+ri(20,Math.min(38,c.hi-lo));
+const SLCTX=[{icon:"📝",what:"คะแนนสอบ (เต็ม 60)",unit:"คะแนน",lo:18,hi:60},{icon:"⚖️",what:"น้ำหนักนักเรียน",unit:"กก.",lo:35,hi:72},
+  {icon:"🪢",what:"จำนวนครั้งกระโดดเชือกใน 1 นาที",unit:"ครั้ง",lo:30,hi:95},{icon:"🏛️",what:"อายุผู้มาใช้บริการห้องสมุด",unit:"ปี",lo:12,hi:58}];
+function gStemRead(sub){
+  const c=pick(SLCTX), n=ri(17,22), lo=ri(c.lo,c.hi-28), hi=lo+ri(22,28);
   const a=[]; for(let i=0;i<n;i++) a.push(ri(lo,hi));
-  const fig=()=>stemLeaf(slRows(a),`${c.what} · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]} ${c.unit}`);
-  const mx=Math.max(...a),mn=Math.min(...a), k=pick(["max","min","range","n","stem"]);
+  const fig=()=>scene(c.icon,c.what,stemLeaf(slRows(a),`${c.what} · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]} ${c.unit}`));
+  const mx=Math.max(...a),mn=Math.min(...a), k=sub||pick(["max","min","range","n","stem"]);
   if(k==="stem"){ const s=pick([...new Set(a.map(x=>Math.floor(x/10)))]), cnt=a.filter(x=>Math.floor(x/10)===s).length;
     return {t:"แผนภาพต้น-ใบ",type:"num",time:30,unit:"คน",q:`มีข้อมูลที่อยู่ในช่วง <b>${s*10}–${s*10+9}</b> กี่ตัว`,fig,ans:cnt,why:`นับใบของต้น ${s} ได้ ${cnt} ใบ`}; }
   if(k==="n") return {t:"แผนภาพต้น-ใบ",type:"num",time:35,unit:"ตัว",q:`แผนภาพต้น-ใบนี้มีข้อมูล<b>ทั้งหมด</b>กี่ตัว`,fig,ans:n,why:`นับใบทุกต้นรวมกันได้ ${n} ใบ`};
   const L={max:["ค่าสูงสุด",mx,`ต้นล่างสุด ใบขวาสุด = ${mx}`],min:["ค่าต่ำสุด",mn,`ต้นบนสุด ใบซ้ายสุด = ${mn}`],range:["พิสัย",mx-mn,`${mx} − ${mn} = ${mx-mn}`]}[k];
   return {t:"แผนภาพต้น-ใบ",type:"num",time:30,unit:c.unit,q:`จากแผนภาพต้น-ใบของ${c.what} จงหา<b>${L[0]}</b>`,fig,ans:L[1],why:L[2]};
 }
-function gStemPct(){
-  const c=pick(SLCTX), n=pick([20,25,40,50]), lo=ri(c.lo,c.hi-25), hi=lo+ri(20,Math.min(35,c.hi-lo));
+function gStemPct(sub){
+  const c=pick(SLCTX), n=pick([20,25]), lo=ri(c.lo,c.hi-28), hi=lo+ri(22,28);
   const a=dataUniqueMode(n,lo,hi);
-  const fig=()=>stemLeaf(slRows(a),`${c.what} ${n} ข้อมูล · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]}`);
-  if(Math.random()<0.35){ const mi=modeInfo(a);
+  const fig=()=>scene(c.icon,c.what,stemLeaf(slRows(a),`${c.what} ${n} ข้อมูล · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]}`));
+  if(sub==="mode"||(!sub&&Math.random()<0.35)){ const mi=modeInfo(a);
     return {t:"แผนภาพต้น-ใบ",type:"num",time:35,unit:c.unit,q:`ข้อมูลใดมี<b>ความถี่สูงสุด</b> (ฐานนิยม)`,fig,ans:mi.mode,why:`${mi.mode} ปรากฏ ${mi.count} ครั้ง มากที่สุด`}; }
   const s=sortN(a), th=s[ri(Math.floor(n*0.2),Math.floor(n*0.8))], cnt=a.filter(x=>x>=th).length, pct=cnt/n*100;
   return {t:"แผนภาพต้น-ใบ",type:"num",time:60,unit:"%",tol:0.01,q:`ถ้าเกณฑ์ผ่านคือ <b>${th} ${c.unit}ขึ้นไป</b> มีผู้ผ่านเกณฑ์ร้อยละเท่าใด`,fig,ans:pct,show:fx(pct),
     why:`ผ่าน ${cnt} จาก ${n} → ${cnt}/${n} × 100 = ${fx(pct)}%`};
 }
 /* ---------- ตารางความถี่ ---------- */
-const FCTX=[{what:"จำนวนพี่น้อง",unit:"คน",lo:0,hi:4},{what:"จำนวนสัตว์เลี้ยงที่บ้าน",unit:"ตัว",lo:0,hi:5},
-  {what:"แต้มลูกเต๋าที่ทอดได้",unit:"แต้ม",lo:1,hi:6},{what:"คะแนนสอบย่อย (เต็ม 5)",unit:"คะแนน",lo:0,hi:5},{what:"จำนวนมื้ออาหารที่กินต่อวัน",unit:"มื้อ",lo:1,hi:5}];
-function gFreq(){
-  const c=pick(FCTX), n=pick([20,24,25,30]), a=dataUniqueMode(n,c.lo,c.hi), cols=n%6===0?6:5;
-  const fig=()=>grid(a,cols,`${c.what}ของนักเรียน ${n} คน`);
-  const k=pick(["eq","mode","ge","eq"]);
+const FCTX=[{icon:"👨‍👩‍👧",what:"จำนวนพี่น้อง",unit:"คน",lo:0,hi:4},{icon:"🐶",what:"จำนวนสัตว์เลี้ยงที่บ้าน",unit:"ตัว",lo:0,hi:5},
+  {icon:"🎲",what:"แต้มลูกเต๋าที่ทอดได้",unit:"แต้ม",lo:1,hi:6},{icon:"✏️",what:"คะแนนสอบย่อย (เต็ม 5)",unit:"คะแนน",lo:0,hi:5},{icon:"🍚",what:"จำนวนมื้ออาหารที่กินต่อวัน",unit:"มื้อ",lo:1,hi:5}];
+function gFreq(sub){
+  const c=pick(FCTX), n=pick([24,25]), a=dataUniqueMode(n,c.lo,c.hi), cols=n%6===0?6:5;
+  const fig=()=>scene(c.icon,`${c.what}ของนักเรียน ${n} คน`,grid(a,cols,""));
+  const k=sub||pick(["eq","mode","ge","eq"]);
   if(k==="mode"){ const mi=modeInfo(a); return {t:"ตารางความถี่",type:"num",time:45,unit:c.unit,q:`นักเรียน<b>ส่วนใหญ่</b>มี${c.what}เท่าใด`,fig,ans:mi.mode,
     why:"แจกแจงความถี่: "+Object.entries(freqOf(a)).map(([v,f])=>`${v}→${f}`).join(", ")+` · มากสุดคือ ${mi.mode}`}; }
   if(k==="eq"){ const v=pick(a), f=a.filter(x=>x===v).length; return {t:"ตารางความถี่",type:"num",time:40,unit:"คน",q:`ความถี่ของ${c.what} <b>${v} ${c.unit}</b> เท่ากับเท่าใด`,fig,ans:f,why:`นับเลข ${v} ในตารางได้ ${f} ตัว`}; }
@@ -647,13 +656,13 @@ function gFreq(){
   return {t:"ตารางความถี่",type:"num",time:45,unit:"คน",q:`มีนักเรียนที่มี${c.what}<b>ตั้งแต่ ${v} ${c.unit}ขึ้นไป</b>กี่คน`,fig,ans:f,why:`นับค่าที่ ≥ ${v} ได้ ${f} คน`};
 }
 /* ---------- ฮิสโทแกรม ---------- */
-const HCTX=[{what:"คะแนนสอบ",unit:"คะแนน",w:10,s:[20,30,40]},{what:"ส่วนสูง (ซม.)",unit:"ซม.",w:5,s:[140,145,150]},
-  {what:"น้ำหนัก (กก.)",unit:"กก.",w:5,s:[35,40,45]},{what:"เวลาทำการบ้านต่อวัน (นาที)",unit:"นาที",w:15,s:[0,15,30]},{what:"รายจ่ายต่อวัน (บาท)",unit:"บาท",w:20,s:[20,40,60]}];
-function gHist(){
-  const c=pick(HCTX), k=ri(5,6), s0=pick(c.s), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
+const HCTX=[{icon:"📝",what:"คะแนนสอบ",unit:"คะแนน",w:10,s:[20,30,40]},{icon:"📏",what:"ส่วนสูง (ซม.)",unit:"ซม.",w:5,s:[140,145,150]},
+  {icon:"⚖️",what:"น้ำหนัก (กก.)",unit:"กก.",w:5,s:[35,40,45]},{icon:"⏰",what:"เวลาทำการบ้านต่อวัน (นาที)",unit:"นาที",w:15,s:[0,15,30]},{icon:"💰",what:"รายจ่ายต่อวัน (บาท)",unit:"บาท",w:20,s:[20,40,60]}];
+function gHist(sub){
+  const c=pick(HCTX), k=6, s0=pick(c.s), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
   let fr; do{ fr=[]; for(let i=0;i<k;i++) fr.push(ri(1,12)); }while(fr.filter(x=>x===Math.max(...fr)).length>1);
-  const ymax=Math.ceil(Math.max(...fr)/2)*2+2, fig=()=>histo({edges,freqs:fr,ymax,ystep:2,xlabel:c.what,ylabel:"ความถี่ (คน)"}),tot=sum(fr);
-  const t=pick(["total","bin","ge","max","lt"]);
+  const ymax=Math.ceil(Math.max(...fr)/2)*2+2, fig=()=>scene(c.icon,"ฮิสโทแกรม"+c.what.split(" (")[0],histo({edges,freqs:fr,ymax,ystep:2,xlabel:c.what,ylabel:"ความถี่ (คน)"})),tot=sum(fr);
+  const t=sub||pick(["total","bin","ge","max","lt"]);
   if(t==="total") return {t:"ฮิสโทแกรม",type:"num",time:40,unit:"คน",q:`จากฮิสโทแกรม มีข้อมูล<b>ทั้งหมด</b>กี่คน`,fig,ans:tot,why:`รวมความสูงทุกแท่ง: ${fr.join(" + ")} = ${tot}`};
   if(t==="max"){ const i=fr.indexOf(Math.max(...fr)), lab=j=>`${edges[j]} – ${edges[j+1]}`;
     const others=shuffle([...Array(k).keys()].filter(j=>j!==i)).slice(0,3);
@@ -665,38 +674,38 @@ function gHist(){
     why:`รวมแท่ง${ge?"ตั้งแต่ "+edges[j]+" ไปทางขวา":"ทางซ้ายของ "+edges[j]}: ${(ge?fr.slice(j):fr.slice(0,j)).join(" + ")} = ${cnt}`};
 }
 /* ---------- ค่าเฉลี่ยเลขคณิต ---------- */
-function gMean(){
-  const t=pick(["list","list","missing","group","add"]);
-  if(t==="list"){ const n=ri(4,7), half=Math.random()<0.35; let a=[]; for(let i=0;i<n;i++) a.push(ri(10,95));
+function gMean(sub){
+  const t=(sub==="groupInv"?"group":sub)||pick(["list","list","missing","group","add"]);
+  if(t==="list"){ const n=ri(5,6), half=n===6&&Math.random()<0.5; let a=[]; for(let i=0;i<n;i++) a.push(ri(10,95));
     const target=half&&n%2===0?(Math.round(sum(a)/n)+0.5):Math.round(sum(a)/n); a[n-1]+=Math.round(target*n-sum(a)); if(a[n-1]<1){a[n-1]+=n; }
     const m=sum(a)/n;
-    return {t:"ค่าเฉลี่ยเลขคณิต",type:"num",time:50,unit:"",tol:0.001,q:"จงหาค่าเฉลี่ยเลขคณิตของข้อมูลชุดนี้",fig:()=>cards(a),ans:m,show:fx(m),
+    return {t:"ค่าเฉลี่ยเลขคณิต",type:"num",time:50,unit:"",tol:0.001,q:"จงหาค่าเฉลี่ยเลขคณิตของข้อมูลชุดนี้",fig:(()=>{const mc=pick(MCTX);return ()=>scene(mc.icon,mc.what+" ของ "+n+" คน",cardsP(a,"🧑"));})(),ans:m,show:fx(m),
       why:`(${a.join(" + ")}) ÷ ${n} = ${sum(a)} ÷ ${n} = ${fx(m)}`}; }
-  if(t==="missing"){ const n=ri(4,6), m=ri(20,80), a=[]; for(let i=0;i<n-1;i++) a.push(ri(m-15,m+15)); const x=m*n-sum(a);
-    if(x<1||x>200) return gMean();
+  if(t==="missing"){ const n=5, m=ri(20,85), a=[]; for(let i=0;i<n-1;i++) a.push(ri(m-15,m+15)); const x=m*n-sum(a);
+    if(x<1||x>200) return gMean(sub);
     return {t:"ค่าเฉลี่ยเลขคณิต",type:"num",time:55,unit:"",q:`ข้อมูล ${n} จำนวนมีค่าเฉลี่ย <b>${m}</b> ถ้ารู้ ${n-1} จำนวนดังนี้ จำนวนที่เหลือคือเท่าใด`,
-      fig:()=>cards(a.concat(["?"]),v=>v==="?"),ans:x,why:`ผลรวมทั้งหมด = ${n} × ${m} = ${m*n} · ที่รู้แล้วรวม ${sum(a)} → ${m*n} − ${sum(a)} = ${x}`}; }
-  if(t==="group"){ for(let k=0;k<100;k++){ const n1=ri(3,15),n2=ri(3,15),m1=ri(40,80),m2=ri(40,80),T=n1*m1+n2*m2;
-      if(T%(n1+n2)===0&&m1!==m2){ const M=T/(n1+n2), askG=Math.random()<0.5;
+      fig:(()=>{const mc=pick(MCTX);return ()=>scene(mc.icon,mc.what+" · ค่าเฉลี่ย "+m,cardsP(a.concat(["?"]),"🧑",v=>v==="?"));})(),ans:x,why:`ผลรวมทั้งหมด = ${n} × ${m} = ${m*n} · ที่รู้แล้วรวม ${sum(a)} → ${m*n} − ${sum(a)} = ${x}`}; }
+  if(t==="group"){ for(let k=0;k<100;k++){ const n1=ri(3,22),n2=ri(3,22),m1=ri(35,92),m2=ri(35,92),T=n1*m1+n2*m2;
+      if(T%(n1+n2)===0&&m1!==m2){ const M=T/(n1+n2), askG=sub?sub==="group":Math.random()<0.5;
         return askG?{t:"ค่าเฉลี่ยเลขคณิต",type:"num",time:60,unit:"คะแนน",q:`นักเรียนชาย ${n1} คนได้คะแนนเฉลี่ย ${m1} หญิง ${n2} คนได้เฉลี่ย ${m2} ค่าเฉลี่ย<b>รวมทั้งห้อง</b>เป็นเท่าใด`,
             fig:()=>`<div class="pic"><div class="grp"><div class="em">👦</div>ชาย ${n1} คน เฉลี่ย <b>${m1}</b></div><div class="grp"><div class="em">👧</div>หญิง ${n2} คน เฉลี่ย <b>${m2}</b></div></div>`,
             ans:M,why:`(${n1}×${m1} + ${n2}×${m2}) ÷ ${n1+n2} = ${T} ÷ ${n1+n2} = ${M}`}
           :{t:"ค่าเฉลี่ยเลขคณิต",type:"num",time:70,unit:"คะแนน",q:`ห้องหนึ่งมีชาย ${n1} คน หญิง ${n2} คน เฉลี่ยรวม ${M} คะแนน ถ้าชายเฉลี่ย ${m1} คะแนน <b>หญิงเฉลี่ยเท่าใด</b>`,
             fig:()=>`<div class="pic"><div class="grp"><div class="em">👦</div>ชาย ${n1} คน เฉลี่ย <b>${m1}</b></div><div class="grp"><div class="em">👧</div>หญิง ${n2} คน เฉลี่ย <b>?</b></div></div><div class="figcap">ทั้ง ${n1+n2} คน เฉลี่ย ${M}</div>`,
-            ans:m2,why:`รวมทั้งห้อง ${n1+n2}×${M} = ${T} · ชายรวม ${n1*m1} → หญิงรวม ${n2*m2} ÷ ${n2} = ${m2}`}; } } return gMean(); }
-  const n=ri(4,9), m=ri(15,60), d=ri(1,4), x=(m+d)*(n+1)-m*n;
+            ans:m2,why:`รวมทั้งห้อง ${n1+n2}×${M} = ${T} · ชายรวม ${n1*m1} → หญิงรวม ${n2*m2} ÷ ${n2} = ${m2}`}; } } return gMean(sub); }
+  const n=ri(3,15), m=ri(15,150), d=ri(1,9), x=(m+d)*(n+1)-m*n;
   return {t:"ค่าเฉลี่ยเลขคณิต",type:"num",time:60,unit:"บาท",q:`${n} วันแรกเก็บเงินได้เฉลี่ยวันละ ${m} บาท วันที่ ${n+1} ต้องเก็บเท่าไร <b>ค่าเฉลี่ยจึงเพิ่มขึ้นเป็น ${m+d} บาท</b>`,
     fig:()=>`<div class="pic"><div class="grp"><div class="em">🐷</div>${n} วัน เฉลี่ย <b>${m}</b> บาท</div><div class="grp"><div class="em">📅</div>วันที่ ${n+1} = <b>?</b></div></div>`,
     ans:x,why:`ต้องมีรวม ${n+1}×${m+d} = ${(m+d)*(n+1)} · เดิมมี ${n}×${m} = ${m*n} → ${(m+d)*(n+1)} − ${m*n} = ${x}`};
 }
 /* ---------- ค่าเฉลี่ยจากตารางความถี่ / ถ่วงน้ำหนัก ---------- */
-function gMeanFreq(){
-  if(Math.random()<0.4){ const k=ri(3,4), gs=[], cs=[]; for(let i=0;i<k;i++){ gs.push(pick([1,1.5,2,2.5,3,3.5,4])); cs.push(pick([1,1.5,2,3])); }
+function gMeanFreq(sub){
+  if(sub==='gpa'||(!sub&&Math.random()<0.4)){ const k=4, gs=[], cs=[]; for(let i=0;i<k;i++){ gs.push(pick([1,1.5,2,2.5,3,3.5,4])); cs.push(pick([1,1.5,2,3])); }
     const P=sum(gs.map((g,i)=>g*cs[i])), C=sum(cs), G=P/C;
     return {t:"ค่าเฉลี่ยถ่วงน้ำหนัก",type:"num",time:80,unit:"",tol:0.006,q:"จงหา<b>ผลการเรียนเฉลี่ย</b> (ถ่วงด้วยหน่วยกิต) ตอบทศนิยม 2 ตำแหน่ง",
       fig:()=>table(["วิชา","เกรด","หน่วยกิต"],gs.map((g,i)=>["วิชา "+(i+1),g.toFixed(1),cs[i]])),ans:G,show:G.toFixed(2),
       why:`Σ(เกรด×หน่วยกิต) = ${fx(P)} · หน่วยกิตรวม ${C} → ${fx(P)} ÷ ${C} ≈ ${G.toFixed(2)}`}; }
-  const N=pick([10,20,25]), xs=[]; const x0=ri(1,5), k=ri(4,6); for(let i=0;i<k;i++) xs.push(x0+i);
+  const N=pick([20,25]), xs=[]; const x0=ri(1,5), k=5; for(let i=0;i<k;i++) xs.push(x0+i);
   let f; do{ f=xs.map(()=>ri(1,Math.ceil(N/2))); }while(sum(f)>N-1);
   f[ri(0,k-1)]+=N-sum(f);
   const S=sum(xs.map((x,i)=>x*f[i])), M=S/N;
@@ -705,49 +714,54 @@ function gMeanFreq(){
     why:`Σxf = ${xs.map((x,i)=>x+"×"+f[i]).join(" + ")} = ${S} → ${S} ÷ ${N} = ${fx(M)}`};
 }
 /* ---------- มัธยฐาน ---------- */
-function gMedian(){
-  if(Math.random()<0.3){ const xs=[], x0=ri(1,6); for(let i=0;i<5;i++) xs.push(x0+i); let f; do{ f=xs.map(()=>ri(1,7)); }while(sum(f)%2===0);
+function gMedian(sub){
+  if(sub==='table'||(!sub&&Math.random()<0.3)){ const xs=[], x0=ri(1,6); for(let i=0;i<5;i++) xs.push(x0+i); let f; do{ f=xs.map(()=>ri(1,7)); }while(sum(f)%2===0);
     const all=[]; xs.forEach((x,i)=>{ for(let j=0;j<f[i];j++) all.push(x); }); const N=all.length, md=medianOf(all);
     return {t:"มัธยฐาน",type:"num",time:60,unit:"",tol:0.001,q:"จงหา<b>มัธยฐาน</b>จากตารางแจกแจงความถี่นี้",fig:()=>hTable("ค่า (x)",xs,"ความถี่ (f)",f),ans:md,
       why:`N = ${N} (คี่) ตำแหน่งมัธยฐาน = (${N}+1)/2 = ${(N+1)/2} · สะสมความถี่แล้วตำแหน่งนี้ตรงกับ ${md}`}; }
-  const n=ri(5,10), dec=Math.random()<0.25, a=[]; for(let i=0;i<n;i++) a.push(dec?ri(5,120)/10:ri(5,99));
+  const n=sub==='odd'?pick([7,9]):sub==='even'||sub==='dec'?pick([6,8]):ri(6,9), dec=sub==='dec'||(!sub&&Math.random()<0.25), a=[]; for(let i=0;i<n;i++) a.push(dec?ri(5,120)/10:ri(5,99));
   const s=sortN(a), md=medianOf(a);
-  return {t:"มัธยฐาน",type:"num",time:50,unit:"",tol:0.001,q:"จงหา<b>มัธยฐาน</b>ของข้อมูลชุดนี้",fig:()=>cards(a),ans:md,show:fx(md),
+  return {t:"มัธยฐาน",type:"num",time:50,unit:"",tol:0.001,q:"จงหา<b>มัธยฐาน</b>ของข้อมูลชุดนี้",fig:(()=>{const mc=pick(MCTX);return ()=>scene(mc.icon,mc.what+" ("+n+" ข้อมูล)",cardsP(a,"🔹"));})(),ans:md,show:fx(md),
     why:`เรียง: ${s.join(", ")} · n = ${n} ${n%2?`(คี่) → ตัวที่ ${(n+1)/2} = ${fx(md)}`:`(คู่) → (${s[n/2-1]} + ${s[n/2]}) ÷ 2 = ${fx(md)}`}`};
 }
 /* ---------- ฐานนิยม & เลือกค่ากลาง ---------- */
-function gModeChoose(){
-  const t=pick(["mode","mode","outlier","cat"]);
+function gModeChoose(sub){
+  const t=sub||pick(["mode","mode","outlier","cat"]);
   if(t==="mode"){ const a=dataUniqueMode(ri(8,12),ri(1,30),ri(31,45)).map(x=>x), mi=modeInfo(a);
-    return {t:"ฐานนิยม",type:"num",time:35,unit:"",q:"จงหา<b>ฐานนิยม</b>ของข้อมูลชุดนี้",fig:()=>cards(a),ans:mi.mode,why:`${mi.mode} ปรากฏ ${mi.count} ครั้ง มากที่สุด`}; }
+    return {t:"ฐานนิยม",type:"num",time:35,unit:"",q:"จงหา<b>ฐานนิยม</b>ของข้อมูลชุดนี้",fig:(()=>{const mc=pick(MCTX);return ()=>scene(mc.icon,mc.what,cardsP(a,"🔸"));})(),ans:mi.mode,why:`${mi.mode} ปรากฏ ${mi.count} ครั้ง มากที่สุด`}; }
   if(t==="outlier"){ const a=[]; const b=ri(40,80); for(let i=0;i<ri(7,9);i++) a.push(b+ri(-8,8)); const o=pick([b*ri(8,30),ri(1,3)]); a.splice(ri(0,a.length),0,o);
-    return {t:"เลือกค่ากลาง",type:"mc",time:30,q:"ค่ากลางใด<b>เหมาะสมที่สุด</b>กับข้อมูลชุดนี้",fig:()=>cards(a,v=>v===o),
+    return {t:"เลือกค่ากลาง",type:"mc",time:30,q:"ค่ากลางใด<b>เหมาะสมที่สุด</b>กับข้อมูลชุดนี้",fig:()=>scene("🔎","ข้อมูลชุดนี้มีค่าหนึ่งแปลกกว่าเพื่อน",cardsP(a,"🔹",v=>v===o)),
       choices:["มัธยฐาน","ค่าเฉลี่ยเลขคณิต","ฐานนิยม","ค่าสูงสุด"],why:`มีค่าผิดปกติ ${o} ที่ห่างจากกลุ่มมาก ทำให้ค่าเฉลี่ยคลาดเคลื่อน → ใช้มัธยฐาน`}; }
-  const it=pick([{w:"ไซส์เสื้อที่ขายได้",v:["S","M","L","XL"]},{w:"สีที่นักเรียนชอบ",v:["แดง","น้ำเงิน","เขียว","เหลือง"]},{w:"ผลไม้ที่ชอบ",v:["มะม่วง","ทุเรียน","ส้ม","กล้วย"]}]);
-  const f=it.v.map(()=>ri(2,12)); const mx=Math.max(...f); if(f.filter(x=>x===mx).length>1) f[0]=mx+1;
+  const it=pick([{w:"ไซส์เสื้อที่ขายได้",v:["S","M","L","XL","XXL"]},{w:"สีที่นักเรียนชอบ",v:["แดง","น้ำเงิน","เขียว","เหลือง","ม่วง"]},{w:"ผลไม้ที่ชอบ",v:["มะม่วง","ทุเรียน","ส้ม","กล้วย","มังคุด"]},{w:"กีฬาที่ชอบ",v:["ฟุตบอล","แบดมินตัน","บาสเกตบอล","วอลเลย์บอล","ว่ายน้ำ"]},{w:"วิชาที่ชอบ",v:["คณิต","วิทย์","อังกฤษ","ไทย","ศิลปะ"]},{w:"เมนูอาหารกลางวัน",v:["กะเพรา","ข้าวมันไก่","ก๋วยเตี๋ยว","ผัดไทย","ข้าวผัด"]}]);
+  const f=it.v.map(()=>ri(2,18)); const mx=Math.max(...f); if(f.filter(x=>x===mx).length>1) f[0]=mx+1;
   const top=it.v[f.indexOf(Math.max(...f))];
   return {t:"เลือกค่ากลาง",type:"mc",time:30,q:`ข้อมูล${it.w}เป็นข้อมูลเชิงคุณภาพ ค่ากลางที่<b>ใช้ได้</b>คือข้อใด`,fig:()=>hTable(it.w,it.v,"จำนวน",f),
     choices:[`ฐานนิยม = ${top}`,"ค่าเฉลี่ยเลขคณิต","มัธยฐาน","พิสัย"],why:`ข้อมูลไม่ใช่ตัวเลข หาค่าเฉลี่ย/มัธยฐานไม่ได้ ใช้ฐานนิยม คือ ${top} (พบมากที่สุด)`};
 }
 
-/* ================= รายการด่านทั้งหมด ================= */
+/* ================= รายการด่านทั้งหมด =================
+   plan = ลำดับชนิดโจทย์ 10 ข้อที่ทุกคนได้เหมือนกัน (ความยากเท่ากัน) แต่ตัวเลข/ข้อมูล/เรื่องราวสุ่มใหม่ของใครของมัน */
+const P=(fn,arr)=>arr.map(s=>[fn,s]);
 const GEN_STAGES=[
- {id:"5",name:"แผนภาพจุด: สูงสุด ต่ำสุด พิสัย",icon:"📍",gens:[gDotRange]},
- {id:"6",name:"แผนภาพจุด: ฐานนิยม & การนับ",icon:"🔢",gens:[gDotCount]},
- {id:"7",name:"อ่านแผนภาพต้น-ใบ",icon:"🌱",gens:[gStemRead]},
- {id:"8",name:"ต้น-ใบ: ร้อยละ & ฐานนิยม",icon:"💯",gens:[gStemPct]},
- {id:"9",name:"ตารางแจกแจงความถี่",icon:"🧮",gens:[gFreq]},
- {id:"10",name:"อ่านฮิสโทแกรม",icon:"📊",gens:[gHist]},
- {id:"11",name:"ค่าเฉลี่ยเลขคณิต",icon:"➗",gens:[gMean]},
- {id:"12",name:"ค่าเฉลี่ยจากตาราง & ถ่วงน้ำหนัก",icon:"⚖️",gens:[gMeanFreq]},
- {id:"13",name:"มัธยฐาน",icon:"🎚️",gens:[gMedian]},
- {id:"14",name:"ฐานนิยม & เลือกค่ากลาง",icon:"🧭",gens:[gModeChoose]},
- {id:"15",name:"ผสมทุกเรื่อง",icon:"🌀",gens:[gDotRange,gDotCount,gStemRead,gStemPct,gFreq,gHist,gMean,gMeanFreq,gMedian,gModeChoose]}
+ {id:"5",name:"แผนภาพจุด: สูงสุด ต่ำสุด พิสัย",icon:"📍",plan:P(gDotRange,["max","min","range","max","range","min","range","max","range","range"])},
+ {id:"6",name:"แผนภาพจุด: ฐานนิยม & การนับ",icon:"🔢",plan:P(gDotCount,["mode","eq","ge","le","total","mode","ge","eq","le","mode"])},
+ {id:"7",name:"อ่านแผนภาพต้น-ใบ",icon:"🌱",plan:P(gStemRead,["min","max","range","stem","n","stem","range","max","min","range"])},
+ {id:"8",name:"ต้น-ใบ: ร้อยละ & ฐานนิยม",icon:"💯",plan:P(gStemPct,["pct","mode","pct","pct","mode","pct","mode","pct","pct","mode"])},
+ {id:"9",name:"ตารางแจกแจงความถี่",icon:"🧮",plan:P(gFreq,["eq","mode","ge","eq","mode","ge","eq","ge","mode","eq"])},
+ {id:"10",name:"อ่านฮิสโทแกรม",icon:"📊",plan:P(gHist,["total","bin","ge","max","lt","bin","ge","total","lt","max"])},
+ {id:"11",name:"ค่าเฉลี่ยเลขคณิต",icon:"➗",plan:P(gMean,["list","missing","group","add","list","missing","groupInv","list","add","missing"])},
+ {id:"12",name:"ค่าเฉลี่ยจากตาราง & ถ่วงน้ำหนัก",icon:"⚖️",plan:P(gMeanFreq,["freq","gpa","freq","freq","gpa","freq","gpa","freq","freq","gpa"])},
+ {id:"13",name:"มัธยฐาน",icon:"🎚️",plan:P(gMedian,["odd","even","table","odd","even","dec","table","even","odd","table"])},
+ {id:"14",name:"ฐานนิยม & เลือกค่ากลาง",icon:"🧭",plan:P(gModeChoose,["mode","outlier","cat","mode","outlier","cat","mode","outlier","mode","cat"])},
+ {id:"15",name:"ผสมทุกเรื่อง",icon:"🌀",plan:[[gDotRange,"range"],[gDotCount,"ge"],[gStemRead,"range"],[gStemPct,"pct"],[gFreq,"mode"],[gHist,"ge"],[gMean,"missing"],[gMeanFreq,"freq"],[gMedian,"even"],[gModeChoose,"outlier"]]}
 ];
-const ALLGENS=GEN_STAGES[GEN_STAGES.length-1].gens;
+const ALLGENS=[gDotRange,gDotCount,gStemRead,gStemPct,gFreq,gHist,gMean,gMeanFreq,gMedian,gModeChoose];
 function genQs(gens,n){ const out=[], seen=new Set(); let guard=0;
   while(out.length<n&&guard++<200){ const q=pick(gens)(); const key=q.q+"|"+(q.ans!==undefined?q.ans:q.choices.join()); if(seen.has(key)) continue; seen.add(key); out.push(q); }
   return out; }
+/* สร้างตามแผน: ข้อไหนซ้ำกับข้อก่อนหน้า (ข้อความ+คำตอบเดียวกัน) จะสุ่มใหม่ */
+function planQs(plan){ const seen=new Set();
+  return plan.map(([fn,sub])=>{ let q; for(let t=0;t<30;t++){ q=fn(sub); const key=q.q+"|"+(q.ans!==undefined?q.ans:q.choices.join())+"|"+q.fig().length; if(!seen.has(key)){ seen.add(key); break; } } return q; }); }
 
 /* ================= ระดับท้าทาย (ยังอยู่ในขอบเขต: แผนภาพจุด ต้น-ใบ ฮิสโทแกรม ค่ากลาง) ================= */
 const splitN=(N,k,mn)=>{ const f=Array(k).fill(mn); let r=N-mn*k; while(r>0){ f[ri(0,k-1)]++; r--; } return f; };
@@ -763,156 +777,156 @@ function twoStem(A,B,na,nb,cap){
 }
 
 /* ---------- แผนภาพจุด ---------- */
-function hDotMedian(){
-  const c=pick(CTX), n=ri(11,22), sp=ri(7,13), lo=ri(c.lo,Math.max(c.lo,c.hi-sp)), a=dataUniqueMode(n,lo,lo+sp), md=medianOf(a), s=sortN(a);
+function hDotMedian(sub){
+  const c=pick(CTX), n=sub==='even'?pick([16,18,20]):sub==='odd'?pick([15,17,19]):ri(15,20), sp=Math.min(ri(9,11),c.hi-c.lo), lo=ri(c.lo,Math.max(c.lo,c.hi-sp)), a=dataUniqueMode(n,lo,lo+sp), md=medianOf(a), s=sortN(a);
   return {t:"แผนภาพจุด · ยาก",type:"num",time:75,unit:c.unit,tol:0.001,q:`จากแผนภาพจุด จงหา<b>มัธยฐาน</b>ของ${c.what}`,
-    fig:()=>dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"}),ans:md,show:fx(md),
+    fig:()=>scene(c.icon,c.what+" · "+n+" คน",dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"})),ans:md,show:fx(md),
     why:`มีข้อมูล ${n} ตัว (${n%2?"คี่":"คู่"}) · ${n%2?`ตำแหน่งที่ ${(n+1)/2} นับจากซ้าย = ${md}`:`ตำแหน่งที่ ${n/2} และ ${n/2+1} คือ ${s[n/2-1]} กับ ${s[n/2]} → เฉลี่ย = ${fx(md)}`}`};
 }
-function hDotPct(){
-  const c=pick(CTX), n=pick([20,25,40,50]), sp=ri(8,14), lo=ri(c.lo,Math.max(c.lo,c.hi-sp)), a=dataUniqueMode(n,lo,lo+sp), s=sortN(a);
-  const th=s[ri(Math.floor(n*0.25),Math.floor(n*0.75))], strict=Math.random()<0.5, cnt=a.filter(x=>strict?x>th:x<=th).length, pct=cnt/n*100;
+function hDotPct(sub){
+  const c=pick(CTX), n=pick([20,25]), sp=Math.min(ri(9,11),c.hi-c.lo), lo=ri(c.lo,Math.max(c.lo,c.hi-sp)), a=dataUniqueMode(n,lo,lo+sp), s=sortN(a);
+  const th=s[ri(Math.floor(n*0.25),Math.floor(n*0.75))], strict=sub?sub==='gt':Math.random()<0.5, cnt=a.filter(x=>strict?x>th:x<=th).length, pct=cnt/n*100;
   return {t:"แผนภาพจุด · ยาก",type:"num",time:80,unit:"%",tol:0.01,q:`ข้อมูล ${n} คน มีกี่เปอร์เซ็นต์ที่${c.what}<b>${strict?"มากกว่า":"ไม่เกิน"} ${th} ${c.unit}</b>`,
-    fig:()=>dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"}),ans:pct,show:fx(pct),
+    fig:()=>scene(c.icon,c.what+" · "+n+" คน",dotPlot({counts:freqOf(a),...axisFor(a),xlabel:c.what+" ("+c.unit+")"})),ans:pct,show:fx(pct),
     why:`นับได้ ${cnt} คน (${strict?"ไม่รวม":"รวม"} ${th}) → ${cnt}/${n} × 100 = ${fx(pct)}%`};
 }
-function hDotCompare(){
+function hDotCompare(sub){
   const c=pick(CTX); let A,B,rA,rB;
   do{ const lo=ri(c.lo,Math.max(c.lo,c.hi-12)); A=dataUniqueMode(ri(10,15),lo,lo+ri(5,12)); B=dataUniqueMode(ri(10,15),lo+ri(-2,3),lo+ri(6,13));
       rA=Math.max(...A)-Math.min(...A); rB=Math.max(...B)-Math.min(...B); }while(rA===rB);
-  const k=Math.random()<0.6?"range":"mode";
-  if(k==="mode"){ const mA=modeInfo(A).mode, mB=modeInfo(B).mode; if(mA===mB) return hDotCompare();
-    return {t:"เปรียบเทียบแผนภาพจุด",type:"num",time:70,unit:c.unit,q:`ฐานนิยมของห้อง ก และห้อง ข <b>ต่างกันเท่าใด</b>`,fig:()=>twoDots(A,B,"ห้อง ก","ห้อง ข",c.what+" ("+c.unit+")"),
+  const k=sub||(Math.random()<0.6?"range":"mode");
+  if(k==="mode"){ const mA=modeInfo(A).mode, mB=modeInfo(B).mode; if(mA===mB) return hDotCompare(sub);
+    return {t:"เปรียบเทียบแผนภาพจุด",type:"num",time:70,unit:c.unit,q:`ฐานนิยมของห้อง ก และห้อง ข <b>ต่างกันเท่าใด</b>`,fig:()=>scene(c.icon,c.what+" ของ 2 ห้อง",twoDots(A,B,"ห้อง ก","ห้อง ข",c.what+" ("+c.unit+")")),
       ans:Math.abs(mA-mB),why:`ฐานนิยมห้อง ก = ${mA} · ห้อง ข = ${mB} → ต่างกัน ${Math.abs(mA-mB)}`}; }
-  return {t:"เปรียบเทียบแผนภาพจุด",type:"num",time:70,unit:c.unit,q:`ห้องที่ข้อมูล<b>กระจายมากกว่า</b> มีพิสัยมากกว่าอีกห้องเท่าใด`,fig:()=>twoDots(A,B,"ห้อง ก","ห้อง ข",c.what+" ("+c.unit+")"),
+  return {t:"เปรียบเทียบแผนภาพจุด",type:"num",time:70,unit:c.unit,q:`ห้องที่ข้อมูล<b>กระจายมากกว่า</b> มีพิสัยมากกว่าอีกห้องเท่าใด`,fig:()=>scene(c.icon,c.what+" ของ 2 ห้อง",twoDots(A,B,"ห้อง ก","ห้อง ข",c.what+" ("+c.unit+")")),
     ans:Math.abs(rA-rB),why:`พิสัยห้อง ก = ${Math.max(...A)} − ${Math.min(...A)} = ${rA} · ห้อง ข = ${Math.max(...B)} − ${Math.min(...B)} = ${rB} → ต่างกัน ${Math.abs(rA-rB)}`};
 }
 /* ---------- ต้น-ใบ ---------- */
-function hStemMedian(){
-  const c=pick(SLCTX), n=ri(11,24), lo=ri(c.lo,c.hi-25), a=[]; for(let i=0;i<n;i++) a.push(ri(lo,lo+ri(20,25)));
+function hStemMedian(sub){
+  const c=pick(SLCTX), n=sub==='even'?pick([16,18,20]):sub==='odd'?pick([15,17,19]):ri(15,20), lo=ri(c.lo,c.hi-25), a=[]; for(let i=0;i<n;i++) a.push(ri(lo,lo+ri(20,25)));
   const md=medianOf(a), s=sortN(a);
   return {t:"ต้น-ใบ · ยาก",type:"num",time:80,unit:c.unit,tol:0.001,q:`จากแผนภาพต้น-ใบของ${c.what} จงหา<b>มัธยฐาน</b>`,
-    fig:()=>stemLeaf(slRows(a),`${n} ข้อมูล · สัญลักษณ์ ${Math.floor(s[0]/10)}|${s[0]%10} หมายถึง ${s[0]}`),ans:md,show:fx(md),
+    fig:()=>scene(c.icon,c.what,stemLeaf(slRows(a),`${n} ข้อมูล · สัญลักษณ์ ${Math.floor(s[0]/10)}|${s[0]%10} หมายถึง ${s[0]}`)),ans:md,show:fx(md),
     why:`n = ${n} ${n%2?`→ ตัวที่ ${(n+1)/2} = ${md}`:`→ ตัวที่ ${n/2} และ ${n/2+1} คือ ${s[n/2-1]}, ${s[n/2]} → ${fx(md)}`}`};
 }
-function hStemMean(){
+function hStemMean(sub){
   const c=pick(SLCTX), n=10, lo=ri(c.lo,c.hi-22), a=[]; for(let i=0;i<n;i++) a.push(ri(lo,lo+20));
   const m=sum(a)/n;
   return {t:"ต้น-ใบ · ยาก",type:"num",time:100,unit:c.unit,tol:0.001,q:`จากแผนภาพต้น-ใบ จงหา<b>ค่าเฉลี่ยเลขคณิต</b>`,
-    fig:()=>stemLeaf(slRows(a),`${c.what} 10 ข้อมูล · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]}`),ans:m,show:fx(m),
+    fig:()=>scene(c.icon,c.what,stemLeaf(slRows(a),`${c.what} 10 ข้อมูล · สัญลักษณ์ ${Math.floor(a[0]/10)}|${a[0]%10} หมายถึง ${a[0]}`)),ans:m,show:fx(m),
     why:`ผลรวม = ${sortN(a).join(" + ")} = ${sum(a)} → ${sum(a)} ÷ 10 = ${fx(m)}`};
 }
-function hStemTwo(){
+function hStemTwo(sub){
   const c=pick(SLCTX), lo=ri(c.lo,c.hi-26);
-  const A=[],B=[]; const nA=ri(9,13),nB=ri(9,13); for(let i=0;i<nA;i++) A.push(ri(lo,lo+22)); for(let i=0;i<nB;i++) B.push(ri(lo+3,lo+25));
-  const k=pick(["median","range"]);
-  const fig=()=>twoStem(A,B,"กลุ่ม ก","กลุ่ม ข",`${c.what} · สัญลักษณ์ ${Math.floor(A[0]/10)}|${A[0]%10} หมายถึง ${A[0]}`);
-  if(k==="median"){ const a=medianOf(A),b=medianOf(B); if(a===b) return hStemTwo();
+  const A=[],B=[]; const nA=ri(10,12),nB=ri(10,12); for(let i=0;i<nA;i++) A.push(ri(lo,lo+22)); for(let i=0;i<nB;i++) B.push(ri(lo+3,lo+25));
+  const k=sub||pick(["median","range"]);
+  const fig=()=>scene(c.icon,c.what+" 2 กลุ่ม",twoStem(A,B,"กลุ่ม ก","กลุ่ม ข",`${c.what} · สัญลักษณ์ ${Math.floor(A[0]/10)}|${A[0]%10} หมายถึง ${A[0]}`));
+  if(k==="median"){ const a=medianOf(A),b=medianOf(B); if(a===b) return hStemTwo(sub);
     return {t:"เปรียบเทียบต้น-ใบ",type:"num",time:100,unit:c.unit,tol:0.001,q:`มัธยฐานของกลุ่ม ก และกลุ่ม ข <b>ต่างกันเท่าใด</b>`,fig,ans:Math.abs(a-b),show:fx(Math.abs(a-b)),
       why:`มัธยฐาน ก (n=${nA}) = ${fx(a)} · มัธยฐาน ข (n=${nB}) = ${fx(b)} → ต่างกัน ${fx(Math.abs(a-b))}`}; }
-  const rA=Math.max(...A)-Math.min(...A), rB=Math.max(...B)-Math.min(...B); if(rA===rB) return hStemTwo();
+  const rA=Math.max(...A)-Math.min(...A), rB=Math.max(...B)-Math.min(...B); if(rA===rB) return hStemTwo(sub);
   return {t:"เปรียบเทียบต้น-ใบ",type:"num",time:80,unit:c.unit,q:`พิสัยของสองกลุ่ม<b>ต่างกันเท่าใด</b>`,fig,ans:Math.abs(rA-rB),
     why:`พิสัย ก = ${Math.max(...A)} − ${Math.min(...A)} = ${rA} · พิสัย ข = ${Math.max(...B)} − ${Math.min(...B)} = ${rB} → ต่างกัน ${Math.abs(rA-rB)}`};
 }
 /* ---------- ฮิสโทแกรม & ตาราง ---------- */
-function hHistPct(){
-  const c=pick(HCTX), k=ri(5,6), s0=pick(c.s), N=pick([20,25,40,50]), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
-  const fr=splitN(N,k,1), j=ri(1,k-1), ge=Math.random()<0.5, cnt=ge?sum(fr.slice(j)):sum(fr.slice(0,j)), pct=cnt/N*100;
+function hHistPct(sub){
+  const c=pick(HCTX), k=6, s0=pick(c.s), N=pick([25,40,50]), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
+  const fr=splitN(N,k,1), j=ri(1,k-1), ge=sub?sub==='ge':Math.random()<0.5, cnt=ge?sum(fr.slice(j)):sum(fr.slice(0,j)), pct=cnt/N*100;
   const ymax=Math.ceil(Math.max(...fr)/2)*2+2, ys=ymax>14?4:2;
   return {t:"ฮิสโทแกรม · ยาก",type:"num",time:90,unit:"%",tol:0.01,q:`คนที่${c.what.split(" (")[0]}<b>${ge?"ตั้งแต่ "+edges[j]+" ขึ้นไป":"น้อยกว่า "+edges[j]}</b> คิดเป็นร้อยละเท่าใดของทั้งหมด`,
-    fig:()=>histo({edges,freqs:fr,ymax,ystep:ys,xlabel:c.what,ylabel:"ความถี่ (คน)"}),ans:pct,show:fx(pct),
+    fig:()=>scene(c.icon,"ฮิสโทแกรม"+c.what.split(" (")[0]+" "+N+" คน",histo({edges,freqs:fr,ymax,ystep:ys,xlabel:c.what,ylabel:"ความถี่ (คน)"})),ans:pct,show:fx(pct),
     why:`ทั้งหมด ${fr.join(" + ")} = ${N} คน · ที่ต้องการ ${cnt} คน → ${cnt}/${N} × 100 = ${fx(pct)}%`};
 }
-function hHistMedianClass(){
-  const c=pick(HCTX), k=ri(5,6), s0=pick(c.s), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
+function hHistMedianClass(sub){
+  const c=pick(HCTX), k=6, s0=pick(c.s), edges=[]; for(let i=0;i<=k;i++) edges.push(s0+i*c.w);
   let fr,N,b1,b2; do{ fr=[]; for(let i=0;i<k;i++) fr.push(ri(1,11)); N=sum(fr);
     const pos=p=>{ let acc=0; for(let i=0;i<k;i++){ acc+=fr[i]; if(p<=acc) return i; } };
     if(N%2){ b1=b2=pos((N+1)/2); } else { b1=pos(N/2); b2=pos(N/2+1); } }while(b1!==b2);
   const lab=i=>`${edges[i]} – ${edges[i+1]}`, others=shuffle([...Array(k).keys()].filter(i=>i!==b1)).slice(0,3);
   let acc=0; const cum=fr.map(f=>acc+=f);
   return {t:"ฮิสโทแกรม · ยาก",type:"mc",time:90,q:`<b>มัธยฐาน</b>ของข้อมูลนี้อยู่ในช่วงใด`,
-    fig:()=>histo({edges,freqs:fr,ymax:Math.ceil(Math.max(...fr)/2)*2+2,ystep:2,xlabel:c.what,ylabel:"ความถี่ (คน)",showN:true}),
+    fig:()=>scene(c.icon,"ฮิสโทแกรม"+c.what.split(" (")[0],histo({edges,freqs:fr,ymax:Math.ceil(Math.max(...fr)/2)*2+2,ystep:2,xlabel:c.what,ylabel:"ความถี่ (คน)",showN:true})),
     choices:[lab(b1),...others.map(lab)],why:`N = ${N} → มัธยฐานอยู่ตำแหน่งที่ ${N%2?(N+1)/2:N/2+"–"+(N/2+1)} · ความถี่สะสม ${cum.join(", ")} → ตกในช่วง ${lab(b1)}`};
 }
-function hFreqMissing(){
+function hFreqMissing(sub){
   for(let t=0;t<300;t++){
-    const x0=ri(1,6), k=ri(4,5), xs=[...Array(k).keys()].map(i=>x0+i), f=xs.map(()=>ri(1,9)), h=ri(0,k-1);
+    const x0=ri(1,6), k=5, xs=[...Array(k).keys()].map(i=>x0+i), f=xs.map(()=>ri(1,9)), h=ri(0,k-1);
     const S=sum(xs.map((x,i)=>x*f[i])), N=sum(f), M=S/N;
     if(!okDec(M,1)||Math.abs(xs[h]-M)<1e-9) continue;
     return {t:"ตารางความถี่ · ยาก",type:"num",time:110,unit:"",q:`ตารางแจกแจงความถี่มีค่าเฉลี่ยเลขคณิตเท่ากับ <b>${fx(M,1)}</b> จงหาความถี่ที่หายไป (?)`,
-      fig:()=>hTable("ค่า (x)",xs,"ความถี่ (f)",f.map((v,i)=>i===h?"?":v)),ans:f[h],
+      fig:()=>scene("🧮","ตารางแจกแจงความถี่",hTable("ค่า (x)",xs,"ความถี่ (f)",f.map((v,i)=>i===h?"?":v))),ans:f[h],
       why:`ให้ ? = f · (Σxf ที่รู้ + ${xs[h]}f) ÷ (Σf ที่รู้ + f) = ${fx(M,1)} → ${S-xs[h]*f[h]} + ${xs[h]}f = ${fx(M,1)}(${N-f[h]} + f) → f = ${f[h]}`};
   }
-  return hFreqMissing();
+  return hFreqMissing(sub);
 }
 /* ---------- ค่าเฉลี่ย ---------- */
-function hMeanFix(){
-  const n=pick([10,20,25,50]), m=ri(40,80), a=ri(30,95); let b; do{ b=Number(String(a).split("").reverse().join("")); }while(false);
+function hMeanFix(sub){
+  const n=pick([10,20,25,50]), m=ri(35,88), a=ri(21,98); let b=pick([Number(String(a).split("").reverse().join("")),a+ri(5,30),a-ri(5,20)]); if(b<0) b=a+ri(5,30);
   if(b===a) b=a+pick([9,-9,10,-10]);
   const M=(n*m-b+a)/n;
   return {t:"ค่าเฉลี่ย · ยาก",type:"num",time:90,unit:"คะแนน",tol:0.001,q:`คะแนนเฉลี่ยของนักเรียน ${n} คนคือ ${m} ต่อมาพบว่า<b>บันทึกคะแนน ${a} ผิดเป็น ${b}</b> ค่าเฉลี่ยที่ถูกต้องเป็นเท่าใด`,
     fig:()=>`<div class="pic"><div class="grp"><div class="em">📝</div>${n} คน เฉลี่ย <b>${m}</b></div><div class="grp"><div class="em">✏️</div>ที่ถูก <b>${a}</b><br>บันทึกเป็น <b style="color:#c0392b">${b}</b></div></div>`,
     ans:M,show:fx(M),why:`ผลรวมเดิม ${n}×${m} = ${n*m} → แก้ให้ถูก ${n*m} − ${b} + ${a} = ${n*m-b+a} → ÷ ${n} = ${fx(M)}`};
 }
-function hMeanRemove(){
-  for(let t=0;t<100;t++){ const n=ri(6,15), m=ri(30,70), m2=m+pick([-3,-2,-1,1,2,3]), x=n*m-(n-1)*m2;
-    if(x<1||x>150) continue;
+function hMeanRemove(sub){
+  for(let t=0;t<100;t++){ const n=ri(6,24), m=ri(25,140), m2=m+pick([-5,-4,-3,-2,-1,1,2,3,4,5]), x=n*m-(n-1)*m2;
+    if(x<1||x>250) continue;
     return {t:"ค่าเฉลี่ย · ยาก",type:"num",time:90,unit:"",q:`ข้อมูล ${n} จำนวนมีค่าเฉลี่ย ${m} เมื่อ<b>ตัดออก 1 จำนวน</b> ค่าเฉลี่ยของที่เหลือเป็น ${m2} จำนวนที่ตัดออกคือเท่าใด`,
       fig:()=>`<div class="pic"><div class="grp"><div class="em">🔢</div>${n} จำนวน เฉลี่ย <b>${m}</b></div><div class="grp"><div class="em">✂️</div>เหลือ ${n-1} จำนวน เฉลี่ย <b>${m2}</b></div></div>`,
       ans:x,why:`ผลรวมเดิม ${n}×${m} = ${n*m} · ผลรวมที่เหลือ ${n-1}×${m2} = ${(n-1)*m2} → ตัดออก ${n*m} − ${(n-1)*m2} = ${x}`}; }
-  return hMeanRemove();
+  return hMeanRemove(sub);
 }
-function hMeanThree(){
+function hMeanThree(sub){
   for(let t=0;t<300;t++){ const ns=[ri(5,20),ri(5,20),ri(5,20)], ms=[ri(40,85),ri(40,85),ri(40,85)], T=sum(ns.map((v,i)=>v*ms[i])), N=sum(ns), M=T/N;
     if(!okDec(M,1)) continue;
     return {t:"ค่าเฉลี่ย · ยาก",type:"num",time:100,unit:"คะแนน",tol:0.001,q:`สามห้องสอบวิชาเดียวกัน จงหา<b>คะแนนเฉลี่ยรวมทั้งสามห้อง</b>`,
       fig:()=>table(["ห้อง","จำนวนนักเรียน","คะแนนเฉลี่ย"],ns.map((v,i)=>["ม.2/"+(i+1),v,ms[i]])),ans:M,show:fx(M,1),
       why:`(${ns.map((v,i)=>v+"×"+ms[i]).join(" + ")}) ÷ ${N} = ${T} ÷ ${N} = ${fx(M,1)} (ห้ามเอาค่าเฉลี่ย 3 ห้องมาเฉลี่ยกันตรง ๆ)`}; }
-  return hMeanThree();
+  return hMeanThree(sub);
 }
-function hGpaNeed(){
-  for(let t=0;t<300;t++){ const k=ri(3,4), gs=[...Array(k)].map(()=>pick([2.5,3,3.25,3.5,3.75,4])), cs=[...Array(k)].map(()=>pick([14,15,15.5,16,16.5]));
+function hGpaNeed(sub){
+  for(let t=0;t<300;t++){ const k=3, gs=[...Array(k)].map(()=>pick([2.5,3,3.25,3.5,3.75,4])), cs=[...Array(k)].map(()=>pick([14,15,15.5,16,16.5]));
     const P=sum(gs.map((g,i)=>g*cs[i])), C=sum(cs), c=pick([15,16]), T=pick([3.25,3.4,3.5,3.6]), g=(T*(C+c)-P)/c;
     if(g<1||g>4) continue;
     return {t:"ค่าเฉลี่ยถ่วงน้ำหนัก · ยาก",type:"num",time:150,unit:"",tol:0.006,q:`ภาคเรียนหน้าลงทะเบียน ${c} หน่วยกิต ต้องได้ผลการเรียนเฉลี่ยเท่าใด <b>ผลการเรียนเฉลี่ยรวมทุกภาคจึงเป็น ${T.toFixed(2)}</b> (ตอบทศนิยม 2 ตำแหน่ง)`,
       fig:()=>table(["ภาคเรียน","ผลการเรียนเฉลี่ย","หน่วยกิต"],gs.map((g,i)=>["ภาค "+(i+1),g.toFixed(2),cs[i]]).concat([["ภาคหน้า","?",c]])),ans:g,show:g.toFixed(2),
       why:`ต้องมีแต้มรวม ${T.toFixed(2)} × ${C+c} = ${fx(T*(C+c))} · มีแล้ว ${fx(P)} → ขาด ${fx(T*(C+c)-P)} ÷ ${c} ≈ ${g.toFixed(2)}`}; }
-  return hGpaNeed();
+  return hGpaNeed(sub);
 }
 /* ---------- มัธยฐาน ฐานนิยม ---------- */
-function hMedianUnknown(){
-  for(let t=0;t<200;t++){ const n=pick([5,7,9]), m=ri(20,60), a=[]; for(let i=0;i<n-1;i++) a.push(ri(m-15,m+15)); const x=n*m-sum(a);
+function hMedianUnknown(sub){
+  for(let t=0;t<200;t++){ const n=7, m=ri(20,60), a=[]; for(let i=0;i<n-1;i++) a.push(ri(m-15,m+15)); const x=n*m-sum(a);
     if(x<1||x>120) continue; const all=a.concat([x]), md=medianOf(all);
     return {t:"มัธยฐาน · ยาก",type:"num",time:110,unit:"",q:`ข้อมูล ${n} จำนวนนี้มี<b>ค่าเฉลี่ยเลขคณิต ${m}</b> จงหา<b>มัธยฐาน</b>ของข้อมูลชุดนี้`,
-      fig:()=>cards(a.concat(["x"]),v=>v==="x"),ans:md,
+      fig:()=>scene("🔢","ข้อมูล 7 จำนวน · ค่าเฉลี่ย "+m,cardsP(a.concat(["x"]),"🔹",v=>v==="x")),ans:md,
       why:`หา x ก่อน: ${n}×${m} − ${sum(a)} = ${x} · เรียง ${sortN(all).join(", ")} → มัธยฐาน (ตัวที่ ${(n+1)/2}) = ${md}`}; }
-  return hMedianUnknown();
+  return hMedianUnknown(sub);
 }
-function hCenterCompare(){
+function hCenterCompare(sub){
   for(let t=0;t<300;t++){ const a=dataUniqueMode(10,ri(10,30),ri(35,60)); a.push(ri(70,99)); a.splice(ri(0,9),1);
     const mi=modeInfo(a); if(!mi.unique) continue; const M=sum(a)/10, md=medianOf(a), mo=mi.mode;
     const vals=[["ค่าเฉลี่ยเลขคณิต",M],["มัธยฐาน",md],["ฐานนิยม",mo]]; const xs=vals.map(v=>v[1]);
     if(new Set(xs.map(v=>fx(v))).size<3) continue;
-    const big=Math.random()<0.5, sel=vals.slice().sort((p,q)=>big?q[1]-p[1]:p[1]-q[1])[0];
+    const big=sub?sub==='big':Math.random()<0.5, sel=vals.slice().sort((p,q)=>big?q[1]-p[1]:p[1]-q[1])[0];
     const choices=[sel[0]].concat(vals.filter(v=>v!==sel).map(v=>v[0])).concat(["ทั้งสามค่าเท่ากัน"]);
-    return {t:"ค่ากลาง · ยาก",type:"mc",time:120,q:`ค่ากลางใดของข้อมูลชุดนี้มีค่า<b>${big?"มากที่สุด":"น้อยที่สุด"}</b>`,fig:()=>cards(a),choices,
+    return {t:"ค่ากลาง · ยาก",type:"mc",time:120,q:`ค่ากลางใดของข้อมูลชุดนี้มีค่า<b>${big?"มากที่สุด":"น้อยที่สุด"}</b>`,fig:()=>scene("📝","คะแนนสอบของนักเรียน 10 คน",cardsP(a,"🧑")),choices,
       why:`ค่าเฉลี่ย = ${sum(a)}÷10 = ${fx(M)} · มัธยฐาน = ${fx(md)} · ฐานนิยม = ${mo} → ${sel[0]}${big?"มาก":"น้อย"}ที่สุด`}; }
-  return hCenterCompare();
+  return hCenterCompare(sub);
 }
-function hOutlierEffect(){
-  const a=[]; const b=ri(30,60), n=ri(7,9); for(let i=0;i<n;i++) a.push(b+ri(-6,6)); const o=b*ri(5,12);
+function hOutlierEffect(sub){
+  const a=[]; const b=ri(30,60), n=8; for(let i=0;i<n;i++) a.push(b+ri(-6,6)); const o=b*ri(5,12);
   const M1=sum(a)/n, M2=(sum(a)+o)/(n+1), d1=medianOf(a), d2=medianOf(a.concat([o]));
-  return {t:"ค่ากลาง · ยาก",type:"mc",time:60,q:`ถ้าเพิ่มข้อมูล <b>${o}</b> เข้าไปในชุดนี้ ค่ากลางใด<b>เปลี่ยนแปลงมากที่สุด</b>`,fig:()=>cards(a.concat([o]),v=>v===o),
+  return {t:"ค่ากลาง · ยาก",type:"mc",time:60,q:`ถ้าเพิ่มข้อมูล <b>${o}</b> เข้าไปในชุดนี้ ค่ากลางใด<b>เปลี่ยนแปลงมากที่สุด</b>`,fig:()=>scene("🔎","ข้อมูลเดิม + ค่าที่เพิ่มเข้าไป (สีแดง)",cardsP(a.concat([o]),"🔹",v=>v===o)),
     choices:["ค่าเฉลี่ยเลขคณิต","มัธยฐาน","ฐานนิยม","ไม่มีค่าใดเปลี่ยน"],
     why:`ค่าเฉลี่ยเปลี่ยนจาก ${fx(M1)} เป็น ${fx(M2)} แต่มัธยฐานเปลี่ยนจาก ${fx(d1)} เป็นแค่ ${fx(d2)} → ค่าเฉลี่ยไวต่อค่าผิดปกติที่สุด`};
 }
 const HARD_STAGES=[
- {id:"16",name:"แผนภาพจุด (ยาก)",icon:"🔥",gens:[hDotMedian,hDotPct,hDotCompare]},
- {id:"17",name:"แผนภาพต้น-ใบ (ยาก)",icon:"🔥",gens:[hStemMedian,hStemMean,hStemTwo]},
- {id:"18",name:"ฮิสโทแกรม & ตารางความถี่ (ยาก)",icon:"🔥",gens:[hHistPct,hHistMedianClass,hFreqMissing]},
- {id:"19",name:"ค่าเฉลี่ยเลขคณิต (ยาก)",icon:"🔥",gens:[hMeanFix,hMeanRemove,hMeanThree,hGpaNeed]},
- {id:"20",name:"มัธยฐาน & ฐานนิยม (ยาก)",icon:"🔥",gens:[hMedianUnknown,hCenterCompare,hOutlierEffect,hStemMedian]},
- {id:"21",name:"ผสมระดับท้าทาย",icon:"💀",gens:[hDotMedian,hDotPct,hDotCompare,hStemMedian,hStemMean,hStemTwo,hHistPct,hHistMedianClass,hFreqMissing,hMeanFix,hMeanRemove,hMeanThree,hGpaNeed,hMedianUnknown,hCenterCompare,hOutlierEffect]}
+ {id:"16",name:"แผนภาพจุด (ยาก)",icon:"🔥",plan:[[hDotMedian,"odd"],[hDotPct,"gt"],[hDotCompare,"range"],[hDotMedian,"even"],[hDotPct,"le"],[hDotCompare,"mode"],[hDotMedian,"odd"],[hDotPct,"gt"],[hDotCompare,"range"],[hDotMedian,"even"]]},
+ {id:"17",name:"แผนภาพต้น-ใบ (ยาก)",icon:"🔥",plan:[[hStemMedian,"odd"],[hStemMean],[hStemTwo,"range"],[hStemMedian,"even"],[hStemMean],[hStemTwo,"median"],[hStemMedian,"odd"],[hStemMean],[hStemTwo,"range"],[hStemMedian,"even"]]},
+ {id:"18",name:"ฮิสโทแกรม & ตารางความถี่ (ยาก)",icon:"🔥",plan:[[hHistPct,"ge"],[hHistMedianClass],[hFreqMissing],[hHistPct,"lt"],[hHistMedianClass],[hFreqMissing],[hHistPct,"ge"],[hHistMedianClass],[hFreqMissing],[hHistPct,"lt"]]},
+ {id:"19",name:"ค่าเฉลี่ยเลขคณิต (ยาก)",icon:"🔥",plan:[[hMeanFix],[hMeanRemove],[hMeanThree],[hMeanFix],[hMeanRemove],[hGpaNeed],[hMeanThree],[hMeanFix],[hMeanRemove],[hGpaNeed]]},
+ {id:"20",name:"มัธยฐาน & ฐานนิยม (ยาก)",icon:"🔥",plan:[[hMedianUnknown],[hCenterCompare,"big"],[hOutlierEffect],[hStemMedian,"even"],[hMedianUnknown],[hCenterCompare,"small"],[hDotMedian,"even"],[hMedianUnknown],[hCenterCompare,"big"],[hStemMedian,"odd"]]},
+ {id:"21",name:"ผสมระดับท้าทาย",icon:"💀",plan:[[hDotMedian,"even"],[hDotCompare,"range"],[hStemMean],[hStemTwo,"median"],[hHistPct,"ge"],[hFreqMissing],[hMeanFix],[hMeanThree],[hMedianUnknown],[hCenterCompare,"big"]]}
 ];
 
 /* ================= ด่าน ================= */
@@ -942,8 +956,8 @@ const STAGES=[
 const ALLQ=STAGES.flatMap(s=>s.qs);
 STAGES.push({id:"all",name:"รวมโจทย์จากหนังสือ",icon:"📘",qs:ALLQ});
 STAGES.forEach(s=>{ s.book=true; s.n=s.qs.length; s.make=()=>s.qs.slice(); });
-GEN_STAGES.forEach(s=>{ s.n=10; s.make=()=>genQs(s.gens,10); STAGES.push(s); });
-HARD_STAGES.forEach(s=>{ s.hard=true; s.n=10; s.make=()=>genQs(s.gens,10); STAGES.push(s); });
+GEN_STAGES.forEach(s=>{ s.n=s.plan.length; s.make=()=>planQs(s.plan); STAGES.push(s); });
+HARD_STAGES.forEach(s=>{ s.hard=true; s.n=s.plan.length; s.make=()=>planQs(s.plan); STAGES.push(s); });
 const stLabel=s=>(s.id==="all"?"":"ด่าน "+s.id+" · ")+s.name;
 const stageById=id=>STAGES.find(s=>s.id===String(id));
 
